@@ -9,7 +9,7 @@ import com.my.test.testapp.ui.feed.impl.RedditFeedPresenterImpl
 import dagger.Module
 import dagger.Provides
 
-@Module(includes = [ApplicationModule::class])
+@Module
 class PresenterModule {
 
     @Provides

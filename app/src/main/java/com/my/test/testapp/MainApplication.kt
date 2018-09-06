@@ -1,6 +1,7 @@
 package com.my.test.testapp
 
 import android.app.Application
+import com.facebook.drawee.backends.pipeline.Fresco
 import com.my.test.testapp.di.component.ApplicationComponent
 import com.my.test.testapp.di.component.DaggerApplicationComponent
 import com.my.test.testapp.di.module.ApplicationModule
@@ -15,6 +16,7 @@ class MainApplication : Application() {
         super.onCreate()
         initRealm()
         initDagger()
+        initFresco()
     }
 
     private fun initRealm() {
@@ -29,4 +31,7 @@ class MainApplication : Application() {
                 .build()
         applicationComponent.inject(this)
     }
+
+
+    private fun initFresco() = Fresco.initialize(this)
 }

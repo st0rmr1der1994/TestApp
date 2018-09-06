@@ -1,16 +1,18 @@
 package com.my.test.testapp.di.component
 
-import android.content.Context
 import com.my.test.testapp.MainApplication
 import com.my.test.testapp.di.module.ApplicationModule
+import com.my.test.testapp.interactor.RedditDetailInteractor
+import com.my.test.testapp.interactor.RedditFeedInteractor
 import dagger.Component
 
 @Component(modules = [ApplicationModule::class])
 interface ApplicationComponent {
-
-    fun appContext(): Context
-
     fun application(): MainApplication
+
+    fun feedInteractor(): RedditFeedInteractor
+
+    fun detailInteractor(): RedditDetailInteractor
 
     fun inject(application: MainApplication)
 }

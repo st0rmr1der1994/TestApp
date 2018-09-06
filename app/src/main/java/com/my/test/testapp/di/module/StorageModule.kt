@@ -16,7 +16,7 @@ class StorageModule {
     internal fun provideRealm(): Realm = Realm.getDefaultInstance()
 
     @Provides
-    internal fun provideRedditPostCache(realm: Realm): RedditPostCache = RedditPostCacheImpl(realm)
+    internal fun provideRedditPostCache(): RedditPostCache = RedditPostCacheImpl()
 
     @Provides
     @Named("LOCAL")

@@ -5,25 +5,25 @@ import io.reactivex.Observable
 import io.realm.Realm
 import io.realm.kotlin.where
 
-class RedditPostCacheImpl(private val realm: Realm) : RedditPostCache {
+class RedditPostCacheImpl : RedditPostCache {
 
     override fun savePost(redditPost: RedditPost) {
-        realm.beginTransaction()
-        realm.copyToRealm(redditPost)
-        realm.commitTransaction()
+        val realm = Realm.getDefaultInstance()
+        realm.executeTransaction { it.copyToRealm(redditPost) }
     }
 
     override fun savePosts(redditPosts: List<RedditPost>) {
-        realm.beginTransaction()
-        realm.copyToRealm(redditPosts)
-        realm.commitTransaction()
+        val realm = Realm.getDefaultInstance()
+        realm.executeTransaction { it.copyToRealm(redditPosts) }
     }
 
     override fun fetchPost(postId: String): Observable<RedditPost> {
-        return Observable.just(realm.where<RedditPost>().equalTo("postId", postId).findFirst())
+        val realm = Realm.getDefaultInstance()
+        return Observable.just(realm.where<RedditPost>().equalTo("postId", postId).findFirstAsync())
     }
 
     override fun fetchPosts(): Observable<List<RedditPost>> {
-        return Observable.just(realm.where<RedditPost>().findAll())
+        val realm = Realm.getDefaultInstance()
+        return Observable.fromArray(realm.where<RedditPost>().findAllAsync())
     }
 }

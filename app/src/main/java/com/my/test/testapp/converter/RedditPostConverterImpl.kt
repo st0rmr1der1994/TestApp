@@ -5,11 +5,15 @@ import com.my.test.testapp.entity.RedditPostModel
 
 class RedditPostConverterImpl : RedditPostConverter {
     override fun convert(redditPost: RedditPost): RedditPostModel {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return RedditPostModel(
+                postThumbnail = redditPost.thumbnail,
+                postTitle = redditPost.title,
+                postAuthor = redditPost.author
+        )
     }
 
     override fun convert(redditPosts: List<RedditPost>): List<RedditPostModel> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return redditPosts.map { convert(it) }
     }
 
 }

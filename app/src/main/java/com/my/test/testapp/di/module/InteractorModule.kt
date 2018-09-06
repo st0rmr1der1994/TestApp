@@ -6,7 +6,7 @@ import com.my.test.testapp.model.RedditRepository
 import dagger.Module
 import dagger.Provides
 
-@Module(includes = [ApplicationModule::class])
+@Module
 class InteractorModule {
     @Provides
     internal fun provideFeedInteractor(redditRepository: RedditRepository): RedditFeedInteractor = RedditFeedInteractor(redditRepository)

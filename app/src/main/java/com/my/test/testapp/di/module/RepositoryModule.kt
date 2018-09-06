@@ -1,5 +1,6 @@
 package com.my.test.testapp.di.module
 
+import android.content.Context
 import com.my.test.testapp.converter.RedditPostConverter
 import com.my.test.testapp.model.RedditRepository
 import com.my.test.testapp.model.RedditRepositoryImpl
@@ -16,7 +17,7 @@ import javax.inject.Named
 class RepositoryModule {
 
     @Provides
-    internal fun provideNetworkManager(): NetworkManager = NetworkManagerImpl()
+    internal fun provideNetworkManager(context: Context): NetworkManager = NetworkManagerImpl(context)
 
     @Provides
     internal fun provideDataSourceFactory(

@@ -4,7 +4,6 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import com.my.test.testapp.entity.RedditFeedResponse
-import com.my.test.testapp.entity.RedditPostEntity
 import com.my.test.testapp.service.RedditPostsDataSource
 import com.my.test.testapp.service.network.FeedResponseDeserializer
 import com.my.test.testapp.service.network.RedditApi
