@@ -11,8 +11,12 @@ abstract class PresentableDaggerController<V : MvpView, P : MvpPresenter<V>>(arg
 
     override fun createView(layoutInflater: LayoutInflater, viewGroup: ViewGroup): View {
         val view = inflateView(layoutInflater, viewGroup)
-        initializeInjector()
+        onFinishInflate(view)
         return view
+    }
+
+    protected open fun onFinishInflate(view: View) {
+        initializeInjector()
     }
 
     abstract fun initializeInjector()

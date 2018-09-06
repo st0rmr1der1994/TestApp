@@ -13,19 +13,29 @@ class RedditFeedPresenterImpl(
 
     override fun attachView(view: RedditFeedView) {
         super.attachView(view)
-        redditFeedInteractor.interact(RedditFeedObserver(), Unit)
+        redditFeedInteractor.interact(RedditFeedObserver(view), Unit)
+    }
+
+    override fun detachView() {
+        super.detachView()
+        redditFeedInteractor.dispose()
     }
 }
 
-private class RedditFeedObserver : DisposableObserver<List<RedditPostModel>>() {
-    override fun onNext(t: List<RedditPostModel>) {
+private class RedditFeedObserver(private val view: RedditFeedView) : DisposableObserver<List<RedditPostModel>>() {
+    override fun onStart() {
+        view.hideLoading()
+    }
 
+    override fun onNext(posts: List<RedditPostModel>) {
+        view.showLoadedPosts(posts)
     }
 
     override fun onComplete() {
+        view.hideLoading()
     }
 
     override fun onError(e: Throwable) {
-
+        view.hideLoading()
     }
 }
