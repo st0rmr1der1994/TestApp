@@ -42,6 +42,8 @@ class RedditFeedAdapter(private var items: MutableList<RedditPostModel>) : Recyc
         notifyDataSetChanged()
     }
 
+    fun isEmpty() = items.isEmpty()
+
     class FeedItemViewHolder(override val containerView: View) : RecyclerView.ViewHolder(containerView), LayoutContainer {
 
         fun bind(model: RedditPostModel) {

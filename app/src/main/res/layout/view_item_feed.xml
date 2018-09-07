@@ -12,6 +12,7 @@
         android:layout_width="100dp"
         android:layout_height="100dp"
         app:placeholderImage="@android:drawable/ic_menu_camera"
+        app:failureImage="@android:drawable/stat_notify_error"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>

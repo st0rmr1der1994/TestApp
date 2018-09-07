@@ -8,16 +8,24 @@ import io.realm.kotlin.where
 class RedditPostCacheImpl : RedditPostCache {
 
     override fun savePosts(redditPosts: List<RedditPost>) {
-        val realm = Realm.getDefaultInstance()
-        realm.executeTransaction { it.copyToRealm(redditPosts) }
+        Realm.getDefaultInstance().use {
+            it.beginTransaction()
+            it.copyToRealm(redditPosts)
+            it.commitTransaction()
+        }
     }
 
     override fun fetchPosts(): Observable<List<RedditPost>> {
-        val realm = Realm.getDefaultInstance()
-        realm.executeTransaction {
-            Observable.fromArray(realm.where<RedditPost>().findAllAsync())
+
+        return Observable.create { emitter ->
+            val posts: MutableList<RedditPost> = ArrayList()
+            Realm.getDefaultInstance().use {
+                it.beginTransaction()
+                posts.addAll(it.where<RedditPost>().findAll())
+                it.commitTransaction()
+                emitter.onNext(posts)
+                emitter.onComplete()
+            }
         }
-        //TODO wrap this query
-        return Observable.just(emptyList())
     }
 }

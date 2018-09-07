@@ -11,20 +11,19 @@ class RedditFeedPresenterImpl(
         private val redditFeedInteractor: RedditFeedInteractor
 ) : MvpPresenterImpl<RedditFeedView>(), RedditFeedPresenter {
 
-    override fun attachView(view: RedditFeedView) {
-        super.attachView(view)
-        redditFeedInteractor.interact(RedditFeedObserver(view), Unit)
-    }
-
     override fun detachView() {
         super.detachView()
         redditFeedInteractor.dispose()
     }
+
+    override fun loadPosts() = redditFeedInteractor.interact(RedditFeedObserver(view), Unit)
+
 }
 
 private class RedditFeedObserver(private val view: RedditFeedView) : DisposableObserver<List<RedditPostModel>>() {
     override fun onStart() {
-        view.hideLoading()
+        view.hideError()
+        view.showLoading()
     }
 
     override fun onNext(posts: List<RedditPostModel>) {
@@ -37,5 +36,6 @@ private class RedditFeedObserver(private val view: RedditFeedView) : DisposableO
 
     override fun onError(e: Throwable) {
         view.hideLoading()
+        view.showError()
     }
 }

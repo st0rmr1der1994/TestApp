@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">TestApp</string>
+    <string name="tv_error_caption">Damn! Something went wrong</string>
+    <string name="btn_retry_label">Retry</string>
     <string name="btn_download_label">Download</string>
     <string name="toast_downloaded_prefix">File downloaded successfully %1$s</string>
     <string name="notification_download_title">Download in progress…</string>

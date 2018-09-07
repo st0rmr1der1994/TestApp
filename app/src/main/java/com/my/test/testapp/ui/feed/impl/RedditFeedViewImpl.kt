@@ -47,14 +47,32 @@ class RedditFeedViewImpl : PresentableDaggerController<RedditFeedView, RedditFee
                     }
                 }))
         feedRecyclerView.adapter = feedAdapter
+
+        feedSwipeToRefreshLayout.setOnRefreshListener { presenter.loadPosts() }
+        feedRetryButton.setOnClickListener { presenter.loadPosts() }
+    }
+
+    override fun onAttach(view: View) {
+        super.onAttach(view)
+        if (feedAdapter.isEmpty()) {
+            presenter.loadPosts()
+        }
     }
 
     override fun showLoading() {
-        loadingProgressBar.visibility = VISIBLE
+        feedSwipeToRefreshLayout.isRefreshing = true
     }
 
     override fun hideLoading() {
-        loadingProgressBar.visibility = GONE
+        feedSwipeToRefreshLayout.isRefreshing = false
+    }
+
+    override fun showError() {
+        feedErrorLayout.visibility = VISIBLE
+    }
+
+    override fun hideError() {
+        feedErrorLayout.visibility = GONE
     }
 
     override fun showLoadedPosts(posts: List<RedditPostModel>) {

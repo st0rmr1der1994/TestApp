@@ -9,5 +9,9 @@ interface RedditFeedView : MvpView {
 
     fun hideLoading()
 
+    fun showError()
+
+    fun hideError()
+
     fun showLoadedPosts(posts: List<RedditPostModel>)
 }
