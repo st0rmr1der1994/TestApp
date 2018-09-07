@@ -6,6 +6,7 @@ import com.my.test.testapp.entity.RedditPostModel
 class RedditPostConverterImpl : RedditPostConverter {
     override fun convert(redditPost: RedditPost): RedditPostModel {
         return RedditPostModel(
+                postContent = redditPost.content,
                 postThumbnail = redditPost.thumbnail,
                 postTitle = redditPost.title,
                 postAuthor = redditPost.author

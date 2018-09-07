@@ -2,7 +2,6 @@ package com.my.test.testapp.ui.feed.impl
 
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.LinearLayoutManager.HORIZONTAL
 import android.support.v7.widget.LinearLayoutManager.VERTICAL
 import android.view.LayoutInflater
 import android.view.View
@@ -15,15 +14,18 @@ import com.my.test.testapp.di.component.DaggerFeedComponent
 import com.my.test.testapp.di.component.FeedComponent
 import com.my.test.testapp.di.module.PresenterModule
 import com.my.test.testapp.entity.RedditPostModel
-import com.my.test.testapp.ui.common.BaseController
+import com.my.test.testapp.navigation.go
+import com.my.test.testapp.ui.common.PresentableDaggerController
+import com.my.test.testapp.ui.detail.impl.RedditDetailViewImpl
 import com.my.test.testapp.ui.feed.RedditFeedPresenter
 import com.my.test.testapp.ui.feed.RedditFeedView
+import com.my.test.testapp.ui.feed.util.RecyclerItemClickListener
 import com.my.test.testapp.ui.feed.util.RedditFeedAdapter
 import kotlinx.android.synthetic.main.view_screen_feed.feedRecyclerView
 import kotlinx.android.synthetic.main.view_screen_feed.loadingProgressBar
 import javax.inject.Inject
 
-class RedditFeedViewImpl : BaseController<RedditFeedView, RedditFeedPresenter>(), RedditFeedView {
+class RedditFeedViewImpl : PresentableDaggerController<RedditFeedView, RedditFeedPresenter>(), RedditFeedView {
 
     @Inject
     internal lateinit var feedPresenter: RedditFeedPresenter
@@ -38,6 +40,14 @@ class RedditFeedViewImpl : BaseController<RedditFeedView, RedditFeedPresenter>()
         super.onFinishInflate(view)
         feedRecyclerView.layoutManager = LinearLayoutManager(context, VERTICAL, false)
         feedRecyclerView.addItemDecoration(DividerItemDecoration(context, VERTICAL))
+        feedRecyclerView.addOnItemTouchListener(RecyclerItemClickListener(context!!,
+                object : RecyclerItemClickListener.OnItemClickListener {
+                    @Suppress("UnsafeCast")
+                    override fun onItemClick(position: Int) {
+                        val postModel = feedAdapter.getItemByPosition(position)
+                        router.go(RedditDetailViewImpl.create(postModel))
+                    }
+                }))
         feedRecyclerView.adapter = feedAdapter
     }
 

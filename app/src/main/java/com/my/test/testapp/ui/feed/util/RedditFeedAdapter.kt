@@ -33,6 +33,10 @@ class RedditFeedAdapter(private var items: MutableList<RedditPostModel>) : Recyc
         }
     }
 
+    fun getItemByPosition(position: Int): RedditPostModel {
+        return items[position]
+    }
+
     fun clear() {
         items.clear()
         notifyDataSetChanged()

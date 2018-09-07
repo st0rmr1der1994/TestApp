@@ -13,7 +13,8 @@ class RedditPostRemoteDataSource(
     override fun redditPosts(): Observable<List<RedditPost>> {
         return redditApi.getTopPosts()
                 //rework this piece of junk
-                .map { response -> response.data.map { RedditPost(it.postId, it.postThumbnail, it.postAuthor, it.postTitle) } }
+                .map { response -> response.data.map { RedditPost(it.postId, it.postThumbnail,
+                        it.postContent, it.postAuthor, it.postTitle) } }
                 .doOnNext { redditPostCache.savePosts(it) }
     }
 
