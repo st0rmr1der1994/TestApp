@@ -3,7 +3,7 @@ package com.my.test.testapp.model
 import com.my.test.testapp.converter.RedditPostConverter
 import com.my.test.testapp.entity.RedditPostModel
 import com.my.test.testapp.service.RedditDataSourceFactory
-import com.my.test.testapp.utils.NetworkManager
+import com.my.test.testapp.service.network.util.NetworkManager
 import io.reactivex.Observable
 
 class RedditRepositoryImpl(
@@ -16,10 +16,6 @@ class RedditRepositoryImpl(
 
     override fun redditPosts(): Observable<List<RedditPostModel>> {
         return dataSourceFactory.getDataSource(isConnected()).redditPosts().map { converter.convert(it) }
-    }
-
-    override fun redditPost(postId: String): Observable<RedditPostModel> {
-        return dataSourceFactory.getDataSource(isConnected()).redditPost(postId).map { converter.convert(it) }
     }
 
 }

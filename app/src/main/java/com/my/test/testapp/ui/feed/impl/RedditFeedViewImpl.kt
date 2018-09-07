@@ -8,11 +8,10 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
-import com.my.test.testapp.MainApplication
 import com.my.test.testapp.R
 import com.my.test.testapp.di.component.DaggerFeedComponent
 import com.my.test.testapp.di.component.FeedComponent
-import com.my.test.testapp.di.module.PresenterModule
+import com.my.test.testapp.di.module.RedditFeedModule
 import com.my.test.testapp.entity.RedditPostModel
 import com.my.test.testapp.navigation.go
 import com.my.test.testapp.ui.common.PresentableDaggerController
@@ -21,8 +20,7 @@ import com.my.test.testapp.ui.feed.RedditFeedPresenter
 import com.my.test.testapp.ui.feed.RedditFeedView
 import com.my.test.testapp.ui.feed.util.RecyclerItemClickListener
 import com.my.test.testapp.ui.feed.util.RedditFeedAdapter
-import kotlinx.android.synthetic.main.view_screen_feed.feedRecyclerView
-import kotlinx.android.synthetic.main.view_screen_feed.loadingProgressBar
+import kotlinx.android.synthetic.main.view_screen_feed.*
 import javax.inject.Inject
 
 class RedditFeedViewImpl : PresentableDaggerController<RedditFeedView, RedditFeedPresenter>(), RedditFeedView {
@@ -65,8 +63,8 @@ class RedditFeedViewImpl : PresentableDaggerController<RedditFeedView, RedditFee
 
     override fun initializeInjector() {
         feedComponent = DaggerFeedComponent.builder()
-                .presenterModule(PresenterModule())
-                .applicationComponent((activity?.application as MainApplication).applicationComponent)
+                .applicationComponent(appComponent())
+                .redditFeedModule(RedditFeedModule())
                 .build()
         feedComponent.inject(this)
     }

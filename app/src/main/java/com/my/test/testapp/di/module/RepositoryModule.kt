@@ -7,11 +7,14 @@ import com.my.test.testapp.model.RedditRepositoryImpl
 import com.my.test.testapp.service.RedditDataSourceFactory
 import com.my.test.testapp.service.RedditDataSourceFactoryImpl
 import com.my.test.testapp.service.RedditPostsDataSource
-import com.my.test.testapp.utils.NetworkManager
+import com.my.test.testapp.service.network.util.NetworkManager
 import com.my.test.testapp.utils.NetworkManagerImpl
 import dagger.Module
 import dagger.Provides
 import javax.inject.Named
+
+const val REMOTE_DATASOURCE = "DataSource#remote"
+const val LOCAL_DATASOURCE = "DataSource#local"
 
 @Module
 class RepositoryModule {
@@ -21,8 +24,8 @@ class RepositoryModule {
 
     @Provides
     internal fun provideDataSourceFactory(
-            @Named("REMOTE") remoteDataSource: RedditPostsDataSource,
-            @Named("LOCAL") localDataSource: RedditPostsDataSource
+            @Named(REMOTE_DATASOURCE) remoteDataSource: RedditPostsDataSource,
+            @Named(LOCAL_DATASOURCE) localDataSource: RedditPostsDataSource
     ): RedditDataSourceFactory = RedditDataSourceFactoryImpl(remoteDataSource, localDataSource)
 
     @Provides

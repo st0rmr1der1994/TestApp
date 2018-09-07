@@ -1,29 +1,34 @@
 package com.my.test.testapp.ui.detail.impl
 
+import android.content.pm.PackageManager
 import android.os.Bundle
+import android.support.v4.content.ContextCompat.checkSelfPermission
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.my.test.testapp.MainApplication
+import android.widget.Toast
 import com.my.test.testapp.R
 import com.my.test.testapp.di.component.DaggerDetailComponent
 import com.my.test.testapp.di.component.DetailComponent
-import com.my.test.testapp.di.module.PresenterModule
+import com.my.test.testapp.di.module.RedditDetailModule
 import com.my.test.testapp.entity.RedditPostModel
 import com.my.test.testapp.ui.common.PresentableDaggerController
 import com.my.test.testapp.ui.detail.RedditDetailPresenter
 import com.my.test.testapp.ui.detail.RedditDetailView
+import com.my.test.testapp.ui.detail.util.NotificationProgressView
+import kotlinx.android.synthetic.main.view_screen_detail.*
 import javax.inject.Inject
-import kotlinx.android.synthetic.main.view_screen_detail.postDetailDraweeView
-import kotlinx.android.synthetic.main.view_screen_detail.postTitleTextView
-import kotlinx.android.synthetic.main.view_screen_detail.postAuthorTextView
 
 private const val ARG_KEY_POST_MODEL = "RedditDetailViewImpl#arg_key_post_model"
+private const val PERMISIONS_REQUEST_CODE = 1111
 
 class RedditDetailViewImpl(args: Bundle) : PresentableDaggerController<RedditDetailView, RedditDetailPresenter>(args), RedditDetailView {
 
     @Inject
     internal lateinit var detailPresenter: RedditDetailPresenter
+    @Inject
+    lateinit var notificationProgressView: NotificationProgressView
+
     internal lateinit var detailComponent: DetailComponent
     private val postModel: RedditPostModel by lazy { this.args.getParcelable<RedditPostModel>(ARG_KEY_POST_MODEL) }
 
@@ -32,8 +37,8 @@ class RedditDetailViewImpl(args: Bundle) : PresentableDaggerController<RedditDet
 
     override fun initializeInjector() {
         detailComponent = DaggerDetailComponent.builder()
-                .presenterModule(PresenterModule())
-                .applicationComponent((activity?.application as MainApplication).applicationComponent)
+                .redditDetailModule(RedditDetailModule())
+                .applicationComponent(appComponent())
                 .build()
         detailComponent.inject(this)
     }
@@ -46,6 +51,32 @@ class RedditDetailViewImpl(args: Bundle) : PresentableDaggerController<RedditDet
         postDetailDraweeView.setImageURI(postModel.postContent)
         postTitleTextView.text = postModel.postTitle
         postAuthorTextView.text = postModel.postAuthor
+        downloadMediaButton.setOnClickListener { tryLoadContent() }
+    }
+
+    private fun tryLoadContent() {
+        val storagePermissionLabel = android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+        if (checkSelfPermission(context!!, storagePermissionLabel)
+                == PackageManager.PERMISSION_GRANTED) {
+            presenter.loadContent(postModel.postContent)
+        } else {
+            requestPermissions(arrayOf(storagePermissionLabel), PERMISIONS_REQUEST_CODE)
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if(grantResults[0]== PackageManager.PERMISSION_GRANTED) {
+            tryLoadContent()
+        }
+    }
+
+    override fun showLoading() = notificationProgressView.show()
+
+    override fun hideLoading() = notificationProgressView.hide()
+
+    override fun showResult(result: String) {
+        Toast.makeText(context, context!!.getString(R.string.toast_downloaded_prefix, result), Toast.LENGTH_SHORT).show()
     }
 
     companion object {

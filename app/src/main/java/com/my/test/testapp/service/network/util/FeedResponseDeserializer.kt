@@ -1,4 +1,4 @@
-package com.my.test.testapp.service.network
+package com.my.test.testapp.service.network.util
 
 import com.google.gson.Gson
 import com.google.gson.JsonDeserializationContext
@@ -8,7 +8,7 @@ import com.my.test.testapp.entity.RedditFeedResponse
 import com.my.test.testapp.entity.RedditPostEntity
 import java.lang.reflect.Type
 
-class FeedResponseDeserializer : JsonDeserializer<RedditFeedResponse> {
+class FeedResponseDeserializer(private val gson: Gson) : JsonDeserializer<RedditFeedResponse> {
     override fun deserialize(json: JsonElement, typeOfT: Type, context: JsonDeserializationContext): RedditFeedResponse {
         val responseJsonObject = json.asJsonObject
         return if (responseJsonObject.has("data")) {
@@ -17,7 +17,7 @@ class FeedResponseDeserializer : JsonDeserializer<RedditFeedResponse> {
                 val feedChildren = feedJsonObject.getAsJsonArray("children")
                 val redditFeedEntities = feedChildren.map {
                     val feedEntityObjectWrapper = it.asJsonObject
-                    Gson().fromJson(feedEntityObjectWrapper.get("data"), RedditPostEntity::class.java)
+                    gson.fromJson(feedEntityObjectWrapper.get("data"), RedditPostEntity::class.java)
                 }
                 RedditFeedResponse((redditFeedEntities))
             } else {

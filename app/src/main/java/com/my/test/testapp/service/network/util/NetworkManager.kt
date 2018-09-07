@@ -1,4 +1,4 @@
-package com.my.test.testapp.utils
+package com.my.test.testapp.service.network.util
 
 import io.reactivex.Observable
 

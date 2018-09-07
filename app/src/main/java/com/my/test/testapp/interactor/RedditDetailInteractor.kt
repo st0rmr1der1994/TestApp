@@ -1,10 +1,10 @@
 package com.my.test.testapp.interactor
 
-import com.my.test.testapp.entity.RedditPost
+import com.my.test.testapp.service.network.download.DownloadService
 import io.reactivex.Observable
 
-class RedditDetailInteractor : Interactor<RedditPost, String>() {
-    override fun interactingObservable(metadata: String): Observable<RedditPost> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+class RedditDetailInteractor(private val downloadService: DownloadService) : Interactor<String, String>() {
+    override fun interactingObservable(metadata: String): Observable<String> {
+        return downloadService.downloadFileByUrl(metadata)
     }
 }

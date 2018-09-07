@@ -37,7 +37,7 @@
         android:textSize="20sp"
         android:textColor="@android:color/white"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/downloadMediaButton"
         app:layout_constraintBottom_toTopOf="@+id/postAuthorTextView"
         tools:text="Post Title"/>
 
@@ -52,8 +52,18 @@
         android:textSize="15sp"
         android:textColor="@android:color/white"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/downloadMediaButton"
         app:layout_constraintBottom_toBottomOf="parent"
         tools:text="Post Author"/>
+
+    <Button
+        android:id="@+id/downloadMediaButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="10dp"
+        android:text="@string/btn_download_label"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/postTitleTextView"
+        app:layout_constraintBottom_toBottomOf="@+id/postAuthorTextView"/>
 
 </android.support.constraint.ConstraintLayout>
