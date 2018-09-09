@@ -16,6 +16,7 @@ import com.my.test.testapp.service.network.util.DownloadInterceptor
 import com.my.test.testapp.service.network.util.DownloadProgressListener
 import com.my.test.testapp.service.network.util.FeedResponseDeserializer
 import com.my.test.testapp.service.network.util.NetworkManager
+import com.my.test.testapp.service.storage.download.CacheService
 import com.my.test.testapp.service.storage.download.FileStorage
 import com.my.test.testapp.service.storage.feed.RedditPostCache
 import com.my.test.testapp.utils.BASE_URL
@@ -127,6 +128,7 @@ class NetworkModule {
 
     @Provides
     @Singleton
-    internal fun provideDownloadService(downloadApi: DownloadApi, fileStorage: FileStorage): DownloadService
-            = DownloadServiceImpl(downloadApi, fileStorage)
+    internal fun provideDownloadService(networkManager: NetworkManager, downloadApi: DownloadApi,
+                                        cacheService: CacheService, fileStorage: FileStorage): DownloadService
+            = DownloadServiceImpl(networkManager, downloadApi, cacheService , fileStorage)
 }

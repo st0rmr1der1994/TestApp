@@ -6,6 +6,7 @@ import com.my.test.testapp.model.RedditRepositoryImpl
 import com.my.test.testapp.service.RedditDataSourceFactory
 import com.my.test.testapp.service.RedditDataSourceFactoryImpl
 import com.my.test.testapp.service.RedditPostsDataSource
+import com.my.test.testapp.service.network.util.NetworkManager
 import dagger.Module
 import dagger.Provides
 import javax.inject.Named
@@ -24,7 +25,8 @@ class RepositoryModule {
 
     @Provides
     internal fun provideRepository(
+            networkManager: NetworkManager,
             dataSourceFactory: RedditDataSourceFactory,
             converter: RedditPostToPostModelConverterImpl
-    ): RedditRepository = RedditRepositoryImpl(dataSourceFactory, converter)
+    ): RedditRepository = RedditRepositoryImpl(networkManager, dataSourceFactory, converter)
 }

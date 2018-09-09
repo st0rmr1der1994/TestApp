@@ -12,6 +12,7 @@ import java.io.*
 class FileStorageImpl(
         private val storageDirProvider: FileStorageDirProvider,
         private val contentResolverProvider: ContentResolverProvider) : FileStorage {
+
     override fun saveToStorage(responseBody: ResponseBody): Single<String> {
         return Single.create { emitter ->
             try {
@@ -32,9 +33,7 @@ class FileStorageImpl(
                     val bufferedInputStream = BufferedInputStream(inputStream)
                     val bmp = BitmapFactory.decodeStream(bufferedInputStream)
                     bmp.compress(Bitmap.CompressFormat.JPEG,100, outputStream)
-                    val result = MediaStore.Images.Media.insertImage(contentResolverProvider.getContentResolver(), bmp, fileName, "")
-                    bmp.recycle()
-                    result?.let {
+                    storeBitmapToMedia(bmp, fileName)?.let {
                         emitter.onSuccess(it)
                     } ?: emitter.onError(IllegalStateException("Image failed to be stored in media"))
                 } catch (e: IOException) {
@@ -48,4 +47,24 @@ class FileStorageImpl(
             }
         }
     }
+
+    override fun saveToStorage(bitmap: Bitmap): Single<String> {
+        return Single.create { emitter ->
+            try {
+                val fileName = System.currentTimeMillis().toString() + ".jpg"
+                storeBitmapToMedia(bitmap, fileName)?.let {
+                    emitter.onSuccess(it)
+                } ?: emitter.onError(IllegalStateException("Image failed to be stored in media"))
+            } catch (e: IOException) {
+                emitter.onError(e)
+            }
+        }
+    }
+
+    private fun storeBitmapToMedia(bitmap: Bitmap, fileName: String): String? {
+        val result = MediaStore.Images.Media.insertImage(contentResolverProvider.getContentResolver(), bitmap, fileName, "")
+        bitmap.recycle()
+        return result
+    }
+
 }

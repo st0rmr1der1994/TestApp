@@ -1,7 +1,11 @@
 package com.my.test.testapp.di.module
 
 import android.content.Context
+import com.facebook.drawee.backends.pipeline.Fresco
+import com.facebook.imagepipeline.core.ImagePipeline
 import com.my.test.testapp.service.RedditPostsDataSource
+import com.my.test.testapp.service.storage.download.CacheService
+import com.my.test.testapp.service.storage.download.CacheServiceImpl
 import com.my.test.testapp.service.storage.download.FileStorage
 import com.my.test.testapp.service.storage.download.FileStorageImpl
 import com.my.test.testapp.service.storage.feed.RedditDatabase
@@ -30,6 +34,14 @@ class StorageModule {
     @Provides
     @Singleton
     internal fun provideDirProvider(appContext: Context): FileStorageDirProvider = FileStorageDirProvider((appContext))
+
+    @Provides
+    @Singleton
+    internal fun provideImagePipeline(): ImagePipeline = Fresco.getImagePipeline()
+
+    @Provides
+    @Singleton
+    internal fun provideCacheService(imagePipeline: ImagePipeline): CacheService = CacheServiceImpl(imagePipeline)
 
     @Provides
     @Singleton
