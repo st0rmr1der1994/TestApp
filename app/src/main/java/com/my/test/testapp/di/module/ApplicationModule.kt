@@ -4,6 +4,7 @@ import android.content.Context
 import com.my.test.testapp.MainApplication
 import dagger.Module
 import dagger.Provides
+import javax.inject.Singleton
 
 @Module(includes = [
     NetworkModule::class,
@@ -15,9 +16,7 @@ import dagger.Provides
 class ApplicationModule(private val application: MainApplication) {
 
     @Provides
+    @Singleton
     internal fun provideAppContext(): Context = application
-
-    @Provides
-    internal fun provideApplication(): MainApplication = application
 
 }

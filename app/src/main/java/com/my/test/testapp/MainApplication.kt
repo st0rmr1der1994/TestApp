@@ -13,8 +13,6 @@ import com.my.test.testapp.di.component.DaggerApplicationComponent
 import com.my.test.testapp.di.module.ApplicationModule
 import com.my.test.testapp.utils.NOTIFICATION_CHANNEL_ID
 import com.my.test.testapp.utils.NOTIFICATION_CHANNEL_NAME
-import io.realm.Realm
-import io.realm.RealmConfiguration
 
 class MainApplication : Application() {
 
@@ -22,18 +20,11 @@ class MainApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        initRealm()
         initDagger()
         initFresco()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             setupNotificationChannel()
         }
-    }
-
-    private fun initRealm() {
-        Realm.init(this)
-        val config = RealmConfiguration.Builder().name("testapp.realm").build()
-        Realm.setDefaultConfiguration(config)
     }
 
     private fun initDagger() {

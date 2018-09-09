@@ -1,21 +1,40 @@
 package com.my.test.testapp.model
 
-import com.my.test.testapp.converter.RedditPostConverter
+import com.my.test.testapp.converter.RedditPostToPostModelConverterImpl
+import com.my.test.testapp.entity.RedditPost
 import com.my.test.testapp.entity.RedditPostModel
+import com.my.test.testapp.interactor.FeedMetadata
+import com.my.test.testapp.service.DataSourceKind
 import com.my.test.testapp.service.RedditDataSourceFactory
-import com.my.test.testapp.service.network.util.NetworkManager
-import io.reactivex.Observable
+import io.reactivex.Single
 
 class RedditRepositoryImpl(
-        private val networkManager: NetworkManager,
         private val dataSourceFactory: RedditDataSourceFactory,
-        private val converter: RedditPostConverter
+        private val converter: RedditPostToPostModelConverterImpl
 ) : RedditRepository {
 
-    private fun isConnected() = networkManager.isConnected()
-
-    override fun redditPosts(): Observable<List<RedditPostModel>> {
-        return dataSourceFactory.getDataSource(isConnected()).redditPosts().map { converter.convert(it) }
+    override fun redditPosts(metadata: FeedMetadata): Single<List<RedditPostModel>> {
+        //TODO : I think this metadata params should be reworked somehow
+        return if (metadata.forceReload || metadata.paginatedRequest) {
+            loadFromRemote(metadata)
+                    .map { converter.convert(it) }
+        } else {
+            loadFromLocal(metadata)
+                    .flatMap {
+                        return@flatMap if (it.isEmpty()) {
+                            loadFromRemote(metadata)
+                        } else {
+                            Single.just(it)
+                        }
+                    }
+                    .map { converter.convert(it) }
+        }
     }
+
+    private fun loadFromLocal(metadata: FeedMetadata): Single<List<RedditPost>>
+            = dataSourceFactory.getDataSource(DataSourceKind.LOCAL).redditPosts(metadata)
+
+    private fun loadFromRemote(metadata: FeedMetadata): Single<List<RedditPost>>
+            = dataSourceFactory.getDataSource(DataSourceKind.REMOTE).redditPosts(metadata)
 
 }

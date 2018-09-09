@@ -5,7 +5,10 @@ class RedditDataSourceFactoryImpl(
         private val localDataSource: RedditPostsDataSource
 ) : RedditDataSourceFactory {
 
-    override fun getDataSource(isConnected: Boolean): RedditPostsDataSource {
-        return if (isConnected) remoteDataSource else localDataSource
+    override fun getDataSource(dataSourceKind: DataSourceKind): RedditPostsDataSource {
+        return when(dataSourceKind) {
+            DataSourceKind.REMOTE -> remoteDataSource
+            DataSourceKind.LOCAL -> localDataSource
+        }
     }
 }

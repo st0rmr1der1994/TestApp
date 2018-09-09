@@ -18,7 +18,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-
     <View
         android:layout_width="0dp"
         android:layout_height="1dp"
@@ -37,6 +36,7 @@
         android:ellipsize="end"
         android:textSize="20sp"
         android:textColor="@android:color/white"
+        android:singleLine="true"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/downloadMediaButton"
         app:layout_constraintBottom_toTopOf="@+id/postAuthorTextView"

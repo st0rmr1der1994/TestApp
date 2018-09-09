@@ -1,11 +1,12 @@
 package com.my.test.testapp.ui.feed.impl
 
 import com.my.test.testapp.entity.RedditPostModel
+import com.my.test.testapp.interactor.FeedMetadata
 import com.my.test.testapp.interactor.RedditFeedInteractor
 import com.my.test.testapp.ui.common.MvpPresenterImpl
 import com.my.test.testapp.ui.feed.RedditFeedPresenter
 import com.my.test.testapp.ui.feed.RedditFeedView
-import io.reactivex.observers.DisposableObserver
+import io.reactivex.observers.DisposableSingleObserver
 
 class RedditFeedPresenterImpl(
         private val redditFeedInteractor: RedditFeedInteractor
@@ -16,22 +17,26 @@ class RedditFeedPresenterImpl(
         redditFeedInteractor.dispose()
     }
 
-    override fun loadPosts() = redditFeedInteractor.interact(RedditFeedObserver(view), Unit)
+    override fun loadPosts() = load(view.pageSize, false, false)
 
+    override fun loadMorePosts() = load(view.pageSize, false, true)
+
+    override fun forceLoadPosts() = load(view.pageSize, true, false)
+
+    private fun load(pageSize: Int, forceReload: Boolean, paginatedReuest: Boolean) {
+        redditFeedInteractor.interact(RedditFeedObserver(view), FeedMetadata(pageSize, forceReload, paginatedReuest))
+    }
 }
 
-private class RedditFeedObserver(private val view: RedditFeedView) : DisposableObserver<List<RedditPostModel>>() {
+private class RedditFeedObserver(private val view: RedditFeedView) : DisposableSingleObserver<List<RedditPostModel>>() {
     override fun onStart() {
         view.hideError()
         view.showLoading()
     }
 
-    override fun onNext(posts: List<RedditPostModel>) {
-        view.showLoadedPosts(posts)
-    }
-
-    override fun onComplete() {
+    override fun onSuccess(result: List<RedditPostModel>) {
         view.hideLoading()
+        view.showLoadedPosts(result)
     }
 
     override fun onError(e: Throwable) {

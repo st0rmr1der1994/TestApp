@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import com.my.test.testapp.R
-import com.my.test.testapp.di.component.DaggerDetailComponent
 import com.my.test.testapp.di.component.DetailComponent
 import com.my.test.testapp.di.module.RedditDetailModule
 import com.my.test.testapp.entity.RedditPostModel
@@ -36,10 +35,9 @@ class RedditDetailViewImpl(args: Bundle) : PresentableDaggerController<RedditDet
         get() = detailPresenter
 
     override fun initializeInjector() {
-        detailComponent = DaggerDetailComponent.builder()
-                .redditDetailModule(RedditDetailModule())
-                .applicationComponent(appComponent())
-                .build()
+        val componentBuilder = activityComponent.detailComponentBuilder()
+        componentBuilder.detailModule(RedditDetailModule())
+        detailComponent = componentBuilder.build()
         detailComponent.inject(this)
     }
 

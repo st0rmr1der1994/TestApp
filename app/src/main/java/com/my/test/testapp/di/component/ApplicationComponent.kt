@@ -14,8 +14,6 @@ interface ApplicationComponent {
 
     fun context(): Context
 
-    fun application(): MainApplication
-
     fun feedInteractor(): RedditFeedInteractor
 
     fun detailInteractor(): RedditDetailInteractor

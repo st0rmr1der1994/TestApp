@@ -8,23 +8,33 @@ import com.my.test.testapp.entity.RedditFeedResponse
 import com.my.test.testapp.entity.RedditPostEntity
 import java.lang.reflect.Type
 
+private const val NEXT_PAGE = "after"
+private const val TOP_LEVEL_DATA = "data"
+private const val POSTS = "children"
+private const val POST_DATA = "data"
+
 class FeedResponseDeserializer(private val gson: Gson) : JsonDeserializer<RedditFeedResponse> {
     override fun deserialize(json: JsonElement, typeOfT: Type, context: JsonDeserializationContext): RedditFeedResponse {
         val responseJsonObject = json.asJsonObject
-        return if (responseJsonObject.has("data")) {
-            val feedJsonObject =  responseJsonObject.getAsJsonObject("data")
-            if (feedJsonObject.has("children")) {
-                val feedChildren = feedJsonObject.getAsJsonArray("children")
+        return if (responseJsonObject.has(TOP_LEVEL_DATA)) {
+            val feedJsonObject =  responseJsonObject.getAsJsonObject(TOP_LEVEL_DATA)
+            val nextPageCursor = if (feedJsonObject.has(NEXT_PAGE)) {
+                feedJsonObject.get(NEXT_PAGE).asString
+            } else {
+                ""
+            }
+            if (feedJsonObject.has(POSTS)) {
+                val feedChildren = feedJsonObject.getAsJsonArray(POSTS)
                 val redditFeedEntities = feedChildren.map {
                     val feedEntityObjectWrapper = it.asJsonObject
-                    gson.fromJson(feedEntityObjectWrapper.get("data"), RedditPostEntity::class.java)
+                    gson.fromJson(feedEntityObjectWrapper.get(POST_DATA), RedditPostEntity::class.java)
                 }
-                RedditFeedResponse((redditFeedEntities))
+                RedditFeedResponse((redditFeedEntities), nextPageCursor)
             } else {
-                RedditFeedResponse(emptyList())
+                RedditFeedResponse(emptyList(), nextPageCursor)
             }
         } else {
-            RedditFeedResponse(emptyList())
+            throw IllegalArgumentException("Feed response cannot have an empty data")
         }
     }
 }

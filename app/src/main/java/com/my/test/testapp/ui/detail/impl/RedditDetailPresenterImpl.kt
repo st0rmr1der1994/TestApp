@@ -4,33 +4,31 @@ import com.my.test.testapp.interactor.RedditDetailInteractor
 import com.my.test.testapp.ui.common.MvpPresenterImpl
 import com.my.test.testapp.ui.detail.RedditDetailPresenter
 import com.my.test.testapp.ui.detail.RedditDetailView
-import io.reactivex.observers.DisposableObserver
+import io.reactivex.observers.DisposableSingleObserver
 
 class RedditDetailPresenterImpl(private val redditDetailInteractor: RedditDetailInteractor)
     : MvpPresenterImpl<RedditDetailView>(), RedditDetailPresenter {
-
 
     override fun detachView() {
         super.detachView()
         redditDetailInteractor.dispose()
     }
 
-    override fun loadContent(url: String) {
-        redditDetailInteractor.interact(RedditDetailObserver(view), url)
+    override fun loadContent(url: String?) {
+        url?.let {
+            redditDetailInteractor.interact(RedditDetailObserver(view), url)
+        }
     }
 }
 
-private class RedditDetailObserver(private val view: RedditDetailView) : DisposableObserver<String>() {
+private class RedditDetailObserver(private val view: RedditDetailView) : DisposableSingleObserver<String>() {
     override fun onStart() {
         view.showLoading()
     }
 
-    override fun onNext(result: String) {
-        view.showResult(result)
-    }
-
-    override fun onComplete() {
+    override fun onSuccess(result: String) {
         view.hideLoading()
+        view.showResult(result)
     }
 
     override fun onError(e: Throwable) {

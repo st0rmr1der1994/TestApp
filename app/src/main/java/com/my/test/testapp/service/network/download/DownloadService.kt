@@ -1,8 +1,8 @@
 package com.my.test.testapp.service.network.download
 
-import io.reactivex.Observable
+import io.reactivex.Single
 
 interface DownloadService {
 
-    fun downloadFileByUrl(url: String): Observable<String>
+    fun downloadFileByUrl(url: String): Single<String>
 }

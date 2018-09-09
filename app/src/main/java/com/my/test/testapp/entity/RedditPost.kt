@@ -1,11 +1,20 @@
 package com.my.test.testapp.entity
 
-import io.realm.RealmObject
+import android.arch.persistence.room.Entity
+import android.arch.persistence.room.Index
+import android.arch.persistence.room.PrimaryKey
 
-open class RedditPost(
-        var postId: String = "",
-        var content: String = "",
-        var thumbnail: String = "",
-        var author: String = "",
-        var title: String? = null
-) : RealmObject()
+@Entity(tableName = "posts",
+        indices = [Index(value = ["subredditId"], unique = false)])
+data class RedditPost(
+        @PrimaryKey
+        val name: String,
+        val postId: String,
+        val subredditId: String,
+        val content: String,
+        val author: String,
+        val thumbnail: String?,
+        val title: String?
+) {
+        var indexInResponse: Int = -1
+}

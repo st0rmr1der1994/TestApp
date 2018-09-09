@@ -1,8 +1,10 @@
 package com.my.test.testapp.di.module
 
+import android.content.Context
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
+import com.my.test.testapp.converter.RedditPostEntityToPostConverterImpl
 import com.my.test.testapp.entity.RedditFeedResponse
 import com.my.test.testapp.service.RedditPostsDataSource
 import com.my.test.testapp.service.network.download.DownloadApi
@@ -13,9 +15,11 @@ import com.my.test.testapp.service.network.feed.RedditPostRemoteDataSource
 import com.my.test.testapp.service.network.util.DownloadInterceptor
 import com.my.test.testapp.service.network.util.DownloadProgressListener
 import com.my.test.testapp.service.network.util.FeedResponseDeserializer
+import com.my.test.testapp.service.network.util.NetworkManager
 import com.my.test.testapp.service.storage.download.FileStorage
 import com.my.test.testapp.service.storage.feed.RedditPostCache
 import com.my.test.testapp.utils.BASE_URL
+import com.my.test.testapp.utils.NetworkManagerImpl
 import dagger.Module
 import dagger.Provides
 import io.reactivex.schedulers.Schedulers
@@ -33,6 +37,9 @@ const val DOWNLOAD_CLIENT = "NetworkClient#download"
 
 @Module
 class NetworkModule {
+
+    @Provides
+    internal fun provideNetworkManager(context: Context): NetworkManager = NetworkManagerImpl(context)
 
     @Provides
     internal fun provideCustpmFeedDeserializer(): FeedResponseDeserializer = FeedResponseDeserializer(Gson())
@@ -63,7 +70,7 @@ class NetworkModule {
         loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
         val downloadProgressInterceptor = DownloadInterceptor(object : DownloadProgressListener {
             override fun progress(bytesRead: Long, contentLength: Long, done: Boolean) {
-
+                //TODO : bind with notification
             }
 
         })
@@ -90,7 +97,7 @@ class NetworkModule {
     @Provides
     @Singleton
     @Named(DOWNLOAD_CLIENT)
-    internal fun provideDownloadRetrofit(gson: Gson, @Named(REGULAR_CLIENT) client: OkHttpClient): Retrofit {
+    internal fun provideDownloadRetrofit(@Named(REGULAR_CLIENT) client: OkHttpClient): Retrofit {
         return Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .client(client)
@@ -113,8 +120,10 @@ class NetworkModule {
     @Provides
     @Singleton
     @Named(REMOTE_DATASOURCE)
-    internal fun provideRemoteDataSource(redditFeedApi: RedditFeedApi, redditPostCache: RedditPostCache): RedditPostsDataSource
-            = RedditPostRemoteDataSource(redditFeedApi, redditPostCache)
+    internal fun provideRemoteDataSource(redditFeedApi: RedditFeedApi,
+                                         redditPostCache: RedditPostCache,
+                                         converter: RedditPostEntityToPostConverterImpl): RedditPostsDataSource
+            = RedditPostRemoteDataSource(redditFeedApi, redditPostCache, converter)
 
     @Provides
     @Singleton

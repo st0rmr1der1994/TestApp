@@ -1,6 +1,6 @@
 package com.my.test.testapp.service.network.download
 
-import io.reactivex.Observable
+import io.reactivex.Single
 import okhttp3.ResponseBody
 import retrofit2.http.GET
 import retrofit2.http.Streaming
@@ -10,5 +10,5 @@ interface DownloadApi {
 
     @Streaming
     @GET
-    fun getPostContent(@Url fileUrl: String): Observable<ResponseBody>
+    fun getPostContent(@Url fileUrl: String): Single<ResponseBody>
 }
