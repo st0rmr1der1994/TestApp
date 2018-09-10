@@ -6,9 +6,7 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface RedditFeedApi {
-    @GET("r/dankmemes/top.json")
-    fun getTopPosts(@Query("limit") limit: Int): Flowable<RedditFeedResponse>
 
     @GET("r/dankmemes/top.json")
-    fun getTopPostsAfter(@Query("limit") limit: Int, @Query("after") cursor: String): Flowable<RedditFeedResponse>
+    fun getTopPosts(@Query("limit") limit: Int, @Query("after") cursor: String?): Flowable<RedditFeedResponse>
 }

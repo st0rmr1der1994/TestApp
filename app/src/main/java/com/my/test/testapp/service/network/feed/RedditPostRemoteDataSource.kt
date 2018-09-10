@@ -17,24 +17,19 @@ class RedditPostRemoteDataSource(
     private var nextCursor: String? = null
 
     override fun redditPosts(feedMetadata: FeedMetadata): Flowable<List<RedditPost>> {
-        return if (feedMetadata.forceReload || nextCursor == null) {
+        return if (feedMetadata.forceReload) {
             loadPostsInitial()
         } else {
             loadPostsAfter()
         }
     }
 
-    private fun loadPostsInitial(): Flowable<List<RedditPost>> {
-        return redditFeedApi.getTopPosts(ITEMS_PER_PAGE)
-                .map {
-                    nextCursor = it.nextPageCursor
-                    return@map converter.convert(it.data)
-                }
-                .doOnNext { redditPostCache.savePosts(it) }
-    }
+    private fun loadPostsInitial() = loadPosts(null)
 
-    private fun loadPostsAfter(): Flowable<List<RedditPost>> {
-        return redditFeedApi.getTopPostsAfter(ITEMS_PER_PAGE, nextCursor!!)
+    private fun loadPostsAfter() = loadPosts(nextCursor)
+
+    private fun loadPosts(cursor: String?): Flowable<List<RedditPost>> {
+        return redditFeedApi.getTopPosts(ITEMS_PER_PAGE, cursor)
                 .map {
                     nextCursor = it.nextPageCursor
                     return@map converter.convert(it.data)

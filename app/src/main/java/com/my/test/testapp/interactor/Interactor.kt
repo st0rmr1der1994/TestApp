@@ -11,9 +11,9 @@ abstract class Interactor<E, M> {
 
     private val disposable: CompositeDisposable = CompositeDisposable()
 
-    protected abstract fun interaction(metadata: M): Flowable<E>
+    abstract fun interaction(metadata: M): Flowable<E>
 
-    fun interact(subscriber: DisposableSubscriber<E>, metadata: M) {
+    open fun interact(subscriber: DisposableSubscriber<E>, metadata: M) {
         val observable = interaction((metadata))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
