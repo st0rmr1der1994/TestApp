@@ -21,7 +21,7 @@ class CacheServiceImpl(
             val dataSource = imagePipeline.fetchImageFromBitmapCache(imageRequest, this)
             dataSource.subscribe(object : BaseBitmapReferenceDataSubscriber() {
                 override fun onNewResultImpl(bitmapReference: CloseableReference<Bitmap>?) {
-                    //TODO : find out why isInBitmapMemoryCache returtns true and this returns null
+                    //TODO : find out why isInBitmapMemoryCache returns true and this returns null
                     bitmapReference?.let { it -> emitter.onSuccess(it.get()) }
                             ?: emitter.onError(IllegalStateException("Bitmap is null for given url"))
                 }

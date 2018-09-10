@@ -9,7 +9,7 @@ import com.my.test.testapp.entity.RedditPostModel
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.view_item_feed.*
 
-class RedditFeedAdapter(private var items: MutableList<RedditPostModel>) : RecyclerView.Adapter<RedditFeedAdapter.FeedItemViewHolder>() {
+class RedditFeedAdapter(var items: MutableList<RedditPostModel>) : RecyclerView.Adapter<RedditFeedAdapter.FeedItemViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup,
                                     viewType: Int): RedditFeedAdapter.FeedItemViewHolder {

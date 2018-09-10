@@ -2,6 +2,7 @@ package com.my.test.testapp.ui.feed.impl
 
 import android.content.res.Configuration.ORIENTATION_LANDSCAPE
 import android.content.res.Configuration.ORIENTATION_PORTRAIT
+import android.os.Bundle
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager.VERTICAL
 import android.view.LayoutInflater
@@ -30,6 +31,9 @@ import com.my.test.testapp.utils.OrientationChangedListener
 import kotlinx.android.synthetic.main.view_screen_feed.*
 import javax.inject.Inject
 import javax.inject.Named
+
+private const val STATE_KEY_POSTS = "RedditFeedViewImpl#state_key_posts"
+private const val STATE_KEY_PAGE_SIZE = "RedditFeedViewImpl#state_key_page_size"
 
 class RedditFeedViewImpl : PresentableDaggerController<RedditFeedView, RedditFeedPresenter>(), RedditFeedView, OrientationChangedListener {
 
@@ -75,6 +79,19 @@ class RedditFeedViewImpl : PresentableDaggerController<RedditFeedView, RedditFee
             presenter.loadPosts()
         }
     }
+
+    override fun onSaveViewState(view: View, outState: Bundle) {
+        super.onSaveViewState(view, outState)
+        outState.putParcelableArrayList(STATE_KEY_POSTS, ArrayList(feedAdapter.items))
+        outState.putInt(STATE_KEY_PAGE_SIZE, pageSize)
+    }
+
+    override fun onRestoreViewState(view: View, savedViewState: Bundle) {
+        super.onRestoreViewState(view, savedViewState)
+        feedAdapter.addItems(savedViewState.getParcelableArrayList(STATE_KEY_POSTS))
+        pageSize = savedViewState.getInt(STATE_KEY_PAGE_SIZE)
+    }
+
 
     override fun onOrientationChanged(newOrientation: Int) {
         feedRecyclerView.layoutManager = pickSuitableLayoutManager(newOrientation)
