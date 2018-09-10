@@ -14,7 +14,7 @@ data class RedditPost(
         val content: String,
         val author: String,
         val thumbnail: String?,
-        val title: String?
-) {
-        var indexInResponse: Int = -1
-}
+        val title: String?,
+        val createdTimestamp: Double,
+        val commentsCount: Int
+)

@@ -5,6 +5,7 @@ import com.my.test.testapp.entity.RedditPost
 import com.my.test.testapp.interactor.FeedMetadata
 import com.my.test.testapp.service.RedditPostsDataSource
 import com.my.test.testapp.service.storage.feed.RedditPostCache
+import com.my.test.testapp.utils.ITEMS_PER_PAGE
 import io.reactivex.Single
 
 class RedditPostRemoteDataSource(
@@ -17,22 +18,22 @@ class RedditPostRemoteDataSource(
 
     override fun redditPosts(feedMetadata: FeedMetadata): Single<List<RedditPost>> {
         return if (feedMetadata.forceReload || nextCursor == null) {
-            loadPostsInitial(feedMetadata.pageSize)
+            loadPostsInitial()
         } else {
-            loadPostsAfter(feedMetadata.pageSize)
+            loadPostsAfter()
         }
     }
 
-    private fun loadPostsInitial(pageSize: Int): Single<List<RedditPost>> {
-        return redditFeedApi.getTopPosts(pageSize)
+    private fun loadPostsInitial(): Single<List<RedditPost>> {
+        return redditFeedApi.getTopPosts(ITEMS_PER_PAGE)
                 .doOnSuccess { nextCursor = it.nextPageCursor }
                 .map { converter.convert(it.data) }
                 .doOnSuccess { redditPostCache.savePosts(it) }
 
     }
 
-    private fun loadPostsAfter(pageSize: Int): Single<List<RedditPost>> {
-        return redditFeedApi.getTopPostsAfter(pageSize, nextCursor!!)
+    private fun loadPostsAfter(): Single<List<RedditPost>> {
+        return redditFeedApi.getTopPostsAfter(ITEMS_PER_PAGE, nextCursor!!)
                 .doOnSuccess { nextCursor = it.nextPageCursor }
                 .map { converter.convert(it.data) }
                 .doOnSuccess { redditPostCache.savePosts(it) }

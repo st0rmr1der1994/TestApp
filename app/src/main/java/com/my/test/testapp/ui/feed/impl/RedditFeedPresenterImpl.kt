@@ -19,14 +19,14 @@ class RedditFeedPresenterImpl(
         redditFeedInteractor.dispose()
     }
 
-    override fun loadPosts() = load(view.pageSize, false, false)
+    override fun loadPosts() = load(false, false)
 
-    override fun loadMorePosts() = load(view.pageSize, false, true)
+    override fun loadMorePosts() = load(false, true)
 
-    override fun forceLoadPosts() = load(view.pageSize, true, false)
+    override fun forceLoadPosts() = load(true, false)
 
-    private fun load(pageSize: Int, forceReload: Boolean, paginatedReuest: Boolean) {
-        redditFeedInteractor.interact(RedditFeedObserver(view), FeedMetadata(pageSize, forceReload, paginatedReuest))
+    private fun load(forceReload: Boolean, paginatedReuest: Boolean) {
+        redditFeedInteractor.interact(RedditFeedObserver(view), FeedMetadata(forceReload, paginatedReuest))
     }
 
     override fun openPostDetail(postModel: RedditPostModel) = redditFeedRouter.goPostDetail(postModel)

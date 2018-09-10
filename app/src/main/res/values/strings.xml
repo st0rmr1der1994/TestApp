@@ -5,4 +5,12 @@
     <string name="btn_download_label">Download</string>
     <string name="toast_downloaded_prefix">File downloaded successfully %1$s</string>
     <string name="notification_download_title">Download in progress…</string>
+
+    <string name="tv_post_author_laber">Author: %1$s</string>
+
+    <string name="plurals_template_date_zero_many">%d hours ago</string>
+    <string name="plurals_template_date_one">%d hour ago</string>
+
+    <string name="plurals_template_comments_zero_many">%d comments</string>
+    <string name="plurals_template_comments_one">%d comment</string>
 </resources>

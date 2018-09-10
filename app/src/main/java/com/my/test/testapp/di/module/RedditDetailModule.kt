@@ -11,13 +11,8 @@ import com.my.test.testapp.ui.detail.impl.RedditDetailPresenterImpl
 import com.my.test.testapp.ui.detail.impl.RedditDetailRouterImpl
 import com.my.test.testapp.ui.detail.util.NotificationProgressView
 import com.my.test.testapp.ui.detail.util.NotificationProgressViewImpl
-import com.my.test.testapp.ui.feed.RedditFeedRouter
-import com.my.test.testapp.ui.feed.impl.RedditFeedRouterImpl
 import dagger.Module
 import dagger.Provides
-
-const val FOR_LANDSCAPE = "LayoutManager#forHorizontal"
-const val FOR_PORTRAIT = "LayoutManager#forVertical"
 
 @Module
 class RedditDetailModule {

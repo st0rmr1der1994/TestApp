@@ -1,9 +1,7 @@
 package com.my.test.testapp.ui
 
-import android.content.res.Configuration
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.view.OrientationEventListener
 import android.widget.FrameLayout
 import com.bluelinelabs.conductor.Conductor
 import com.bluelinelabs.conductor.Router
@@ -46,16 +44,6 @@ class MainActivity : AppCompatActivity(), RouterProvider {
     override fun onBackPressed() {
         if (!router.handleBack()) {
             super.onBackPressed()
-        }
-    }
-
-    override fun onConfigurationChanged(newConfig: Configuration) {
-        super.onConfigurationChanged(newConfig)
-        router.backstack.forEach {
-            val controller = it.controller()
-            if (controller is OrientationEventListener) {
-                controller.onOrientationChanged(newConfig.orientation)
-            }
         }
     }
 }

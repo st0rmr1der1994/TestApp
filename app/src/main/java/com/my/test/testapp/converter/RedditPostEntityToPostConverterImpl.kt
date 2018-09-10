@@ -12,6 +12,8 @@ class RedditPostEntityToPostConverterImpl : BaseConverter<RedditPostEntity, Redd
             content = source.postContent,
             thumbnail =  source.postThumbnail,
             author = source.postAuthor,
-            title = source.postTitle
+            title = source.postTitle,
+            createdTimestamp = source.postCreatedTimestamp,
+            commentsCount = source.postCommentsCount
         )
 }

@@ -2,6 +2,7 @@ package com.my.test.testapp.converter
 
 import com.my.test.testapp.entity.RedditPost
 import com.my.test.testapp.entity.RedditPostModel
+import java.util.concurrent.TimeUnit
 
 class RedditPostToPostModelConverterImpl : BaseConverter<RedditPost, RedditPostModel>() {
 
@@ -9,6 +10,13 @@ class RedditPostToPostModelConverterImpl : BaseConverter<RedditPost, RedditPostM
                 postContent = source.content,
                 postThumbnail = source.thumbnail,
                 postTitle = source.title,
-                postAuthor = source.author
+                postAuthor = source.author,
+                postDate = convertTimestampToHourOffset(source.createdTimestamp.toLong()),
+                postCommentsCount = source.commentsCount
             )
+
+    private fun convertTimestampToHourOffset(timestamp: Long): Int {
+        val millisDiff = System.currentTimeMillis() - timestamp * 1000
+        return TimeUnit.MILLISECONDS.toHours(millisDiff).toInt()
+    }
 }

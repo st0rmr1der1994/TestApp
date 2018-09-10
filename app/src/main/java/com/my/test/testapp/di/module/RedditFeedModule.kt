@@ -1,6 +1,9 @@
 package com.my.test.testapp.di.module
 
 import android.app.Activity
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.LinearLayoutManager.VERTICAL
+import android.support.v7.widget.RecyclerView
 import com.my.test.testapp.di.scope.ActivityScope
 import com.my.test.testapp.interactor.RedditFeedInteractor
 import com.my.test.testapp.navigation.RouterProvider
@@ -8,26 +11,15 @@ import com.my.test.testapp.ui.feed.RedditFeedPresenter
 import com.my.test.testapp.ui.feed.RedditFeedRouter
 import com.my.test.testapp.ui.feed.impl.RedditFeedPresenterImpl
 import com.my.test.testapp.ui.feed.impl.RedditFeedRouterImpl
-import com.my.test.testapp.ui.feed.util.FixedCountLayoutManager
-import com.my.test.testapp.utils.ITEMS_PER_PAGE_HORIZONTAL
-import com.my.test.testapp.utils.ITEMS_PER_PAGE_VERTICAL
 import dagger.Module
 import dagger.Provides
-import javax.inject.Named
 
 @Module
 class RedditFeedModule {
 
     @Provides
-    @Named(FOR_LANDSCAPE)
-    internal fun provideLandscapeLayoutManager(@ActivityScope activity: Activity): FixedCountLayoutManager
-            = FixedCountLayoutManager(activity, ITEMS_PER_PAGE_HORIZONTAL)
-
-
-    @Provides
-    @Named(FOR_PORTRAIT)
-    internal fun providePortraitLayoutManager(@ActivityScope activity: Activity): FixedCountLayoutManager
-            = FixedCountLayoutManager(activity, ITEMS_PER_PAGE_VERTICAL)
+    internal fun provideLayoutManager(@ActivityScope activity: Activity): RecyclerView.LayoutManager
+            = LinearLayoutManager(activity, VERTICAL, false)
 
     @Provides
     internal fun provideFeedRouter(routerProvider: RouterProvider): RedditFeedRouter = RedditFeedRouterImpl(routerProvider)

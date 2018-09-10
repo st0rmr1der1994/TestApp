@@ -5,8 +5,6 @@ import com.my.test.testapp.entity.RedditPostModel
 
 interface RedditFeedView : MvpView {
 
-    var pageSize: Int
-
     fun showLoading()
 
     fun hideLoading()

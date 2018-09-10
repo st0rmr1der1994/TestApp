@@ -9,5 +9,7 @@ data class RedditPostEntity(
         @SerializedName("thumbnail") val postThumbnail: String,
         @SerializedName("url") val postContent: String,
         @SerializedName("author") val postAuthor: String,
-        @SerializedName("title") val postTitle: String?
+        @SerializedName("title") val postTitle: String?,
+        @SerializedName("created") val postCreatedTimestamp: Double,
+        @SerializedName("num_comments") val postCommentsCount: Int
 )

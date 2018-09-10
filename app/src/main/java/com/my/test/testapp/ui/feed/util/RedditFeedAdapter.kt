@@ -49,7 +49,9 @@ class RedditFeedAdapter(var items: MutableList<RedditPostModel>) : RecyclerView.
         fun bind(model: RedditPostModel) {
             postThumbnailDraweeView.setImageURI(model.postThumbnail)
             postTitleTextView.text = model.postTitle
-            postAuthorTextView.text = model.postAuthor
+            postAuthorTextView.text = containerView.resources.getString(R.string.tv_post_author_laber, model.postAuthor)
+            postDateTextView.text = containerView.resources.getQuantityString(R.plurals.post_date_plurals, model.postDate, model.postDate)
+            postCommentsCountTextView.text = containerView.resources.getQuantityString(R.plurals.post_comments_plurals, model.postCommentsCount, model.postCommentsCount)
         }
     }
 }

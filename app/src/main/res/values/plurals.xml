@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="post_date_plurals">
+        <item quantity="one">@string/plurals_template_date_one</item>
+        <item quantity="other">@string/plurals_template_date_zero_many</item>
+    </plurals>
+    <plurals name="post_comments_plurals">
+        <item quantity="one">@string/plurals_template_comments_one</item>
+        <item quantity="other">@string/plurals_template_comments_zero_many</item>
+    </plurals>
+</resources>

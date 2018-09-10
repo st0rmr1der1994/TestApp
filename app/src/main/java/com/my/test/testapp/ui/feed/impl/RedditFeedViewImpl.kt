@@ -1,10 +1,9 @@
 package com.my.test.testapp.ui.feed.impl
 
-import android.content.res.Configuration.ORIENTATION_LANDSCAPE
-import android.content.res.Configuration.ORIENTATION_PORTRAIT
 import android.os.Bundle
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager.VERTICAL
+import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
@@ -12,39 +11,25 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import com.my.test.testapp.R
 import com.my.test.testapp.di.component.FeedComponent
-import com.my.test.testapp.di.module.FOR_LANDSCAPE
-import com.my.test.testapp.di.module.FOR_PORTRAIT
 import com.my.test.testapp.di.module.RedditFeedModule
 import com.my.test.testapp.entity.RedditPostModel
-import com.my.test.testapp.navigation.go
 import com.my.test.testapp.ui.common.PresentableDaggerController
-import com.my.test.testapp.ui.detail.impl.RedditDetailViewImpl
 import com.my.test.testapp.ui.feed.RedditFeedPresenter
 import com.my.test.testapp.ui.feed.RedditFeedView
-import com.my.test.testapp.ui.feed.util.FixedCountLayoutManager
 import com.my.test.testapp.ui.feed.util.RecyclerEndlessScrollListener
 import com.my.test.testapp.ui.feed.util.RecyclerItemClickListener
 import com.my.test.testapp.ui.feed.util.RedditFeedAdapter
-import com.my.test.testapp.utils.ITEMS_PER_PAGE_HORIZONTAL
-import com.my.test.testapp.utils.ITEMS_PER_PAGE_VERTICAL
-import com.my.test.testapp.utils.OrientationChangedListener
 import kotlinx.android.synthetic.main.view_screen_feed.*
 import javax.inject.Inject
-import javax.inject.Named
 
 private const val STATE_KEY_POSTS = "RedditFeedViewImpl#state_key_posts"
-private const val STATE_KEY_PAGE_SIZE = "RedditFeedViewImpl#state_key_page_size"
 
-class RedditFeedViewImpl : PresentableDaggerController<RedditFeedView, RedditFeedPresenter>(), RedditFeedView, OrientationChangedListener {
+class RedditFeedViewImpl : PresentableDaggerController<RedditFeedView, RedditFeedPresenter>(), RedditFeedView {
 
     @Inject
     internal lateinit var feedPresenter: RedditFeedPresenter
-
-    @field:[Inject Named(FOR_LANDSCAPE)]
-    internal lateinit var landscapeLayoutManager: FixedCountLayoutManager
-
-    @field:[Inject Named(FOR_PORTRAIT)]
-    internal lateinit var portraitLayoutManager: FixedCountLayoutManager
+    @Inject
+    internal lateinit var layoutManager: RecyclerView.LayoutManager
 
     internal lateinit var feedComponent: FeedComponent
 
@@ -53,13 +38,9 @@ class RedditFeedViewImpl : PresentableDaggerController<RedditFeedView, RedditFee
     override val presenter: RedditFeedPresenter
         get() = feedPresenter
 
-    override var pageSize: Int = -1
-
     override fun onFinishInflate(view: View) {
         super.onFinishInflate(view)
-        val currentOrientation = view.context.resources.configuration.orientation
-        pageSize = pickSuitablePageSize(currentOrientation)
-        feedRecyclerView.layoutManager = pickSuitableLayoutManager(currentOrientation)
+        feedRecyclerView.layoutManager = layoutManager
         feedRecyclerView.addItemDecoration(DividerItemDecoration(context, VERTICAL))
         feedRecyclerView.addOnItemTouchListener(RecyclerItemClickListener(context!!) {
             presenter.openPostDetail(feedAdapter.getItemByPosition(it))
@@ -82,31 +63,11 @@ class RedditFeedViewImpl : PresentableDaggerController<RedditFeedView, RedditFee
     override fun onSaveViewState(view: View, outState: Bundle) {
         super.onSaveViewState(view, outState)
         outState.putParcelableArrayList(STATE_KEY_POSTS, ArrayList(feedAdapter.items))
-        outState.putInt(STATE_KEY_PAGE_SIZE, pageSize)
     }
 
     override fun onRestoreViewState(view: View, savedViewState: Bundle) {
         super.onRestoreViewState(view, savedViewState)
         feedAdapter.addItems(savedViewState.getParcelableArrayList(STATE_KEY_POSTS))
-        pageSize = savedViewState.getInt(STATE_KEY_PAGE_SIZE)
-    }
-
-
-    override fun onOrientationChanged(newOrientation: Int) {
-        feedRecyclerView.layoutManager = pickSuitableLayoutManager(newOrientation)
-        pageSize = pickSuitablePageSize(newOrientation)
-    }
-
-    private fun pickSuitablePageSize(orientation: Int) = when(orientation) {
-        ORIENTATION_PORTRAIT -> ITEMS_PER_PAGE_VERTICAL
-        ORIENTATION_LANDSCAPE -> ITEMS_PER_PAGE_HORIZONTAL
-        else -> { throw IllegalStateException("We cannot find supporting LayoutManager for this orientation") }
-    }
-
-    private fun pickSuitableLayoutManager(orientation: Int) = when(orientation) {
-        ORIENTATION_PORTRAIT -> portraitLayoutManager
-        ORIENTATION_LANDSCAPE -> landscapeLayoutManager
-        else -> { throw IllegalStateException("We cannot find supporting LayoutManager for this orientation") }
     }
 
     override fun showLoading() {

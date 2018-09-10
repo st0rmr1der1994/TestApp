@@ -10,4 +10,4 @@ class RedditFeedInteractor(private val redditRepository: RedditRepository) : Int
     }
 
 }
-data class FeedMetadata(val pageSize: Int, val forceReload: Boolean, val paginatedRequest: Boolean)
+data class FeedMetadata(val forceReload: Boolean, val paginatedRequest: Boolean)
