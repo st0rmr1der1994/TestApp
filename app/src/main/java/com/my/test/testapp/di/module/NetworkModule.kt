@@ -12,10 +12,7 @@ import com.my.test.testapp.service.network.download.DownloadService
 import com.my.test.testapp.service.network.download.DownloadServiceImpl
 import com.my.test.testapp.service.network.feed.RedditFeedApi
 import com.my.test.testapp.service.network.feed.RedditPostRemoteDataSource
-import com.my.test.testapp.service.network.util.DownloadInterceptor
-import com.my.test.testapp.service.network.util.DownloadProgressListener
-import com.my.test.testapp.service.network.util.FeedResponseDeserializer
-import com.my.test.testapp.service.network.util.NetworkManager
+import com.my.test.testapp.service.network.util.*
 import com.my.test.testapp.service.storage.download.CacheService
 import com.my.test.testapp.service.storage.download.FileStorage
 import com.my.test.testapp.service.storage.feed.RedditPostCache
@@ -65,16 +62,15 @@ class NetworkModule {
 
     @Provides
     @Singleton
+    internal fun provideDownloadProgressListener(): DownloadProgressListener = DownloadProgressListenerImpl()
+
+    @Provides
+    @Singleton
     @Named(DOWNLOAD_CLIENT)
-    internal fun provideDownloadOkHttpClient(): OkHttpClient {
+    internal fun provideDownloadOkHttpClient(downloadProgressListener: DownloadProgressListener): OkHttpClient {
         val loggingInterceptor = HttpLoggingInterceptor()
         loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
-        val downloadProgressInterceptor = DownloadInterceptor(object : DownloadProgressListener {
-            override fun progress(bytesRead: Long, contentLength: Long, done: Boolean) {
-                //TODO : bind with notification
-            }
-
-        })
+        val downloadProgressInterceptor = DownloadInterceptor(downloadProgressListener)
         return OkHttpClient.Builder()
                 .connectTimeout(20, TimeUnit.SECONDS)
                 .readTimeout(1, TimeUnit.MINUTES)
@@ -98,7 +94,7 @@ class NetworkModule {
     @Provides
     @Singleton
     @Named(DOWNLOAD_CLIENT)
-    internal fun provideDownloadRetrofit(@Named(REGULAR_CLIENT) client: OkHttpClient): Retrofit {
+    internal fun provideDownloadRetrofit(@Named(DOWNLOAD_CLIENT) client: OkHttpClient): Retrofit {
         return Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .client(client)

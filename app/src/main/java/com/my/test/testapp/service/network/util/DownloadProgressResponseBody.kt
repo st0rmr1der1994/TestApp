@@ -3,7 +3,6 @@ package com.my.test.testapp.service.network.util
 import okhttp3.ResponseBody
 import okio.*
 
-
 class DownloadProgressResponseBody(
         private val responseBody: ResponseBody,
         private val progressListener: DownloadProgressListener
@@ -15,9 +14,12 @@ class DownloadProgressResponseBody(
 
     override fun contentType() = responseBody.contentType()
 
-    override fun source() = bufferedSource?.let {
-        Okio.buffer(getProgressSourceWrapper(responseBody.source(), responseBody.contentLength()))
-    } ?: bufferedSource
+    override fun source(): BufferedSource {
+        if (bufferedSource == null) {
+           bufferedSource = Okio.buffer(getProgressSourceWrapper(responseBody.source(), responseBody.contentLength()))
+        }
+        return bufferedSource!!
+    }
 
     private fun getProgressSourceWrapper(source: Source, contentLength: Long)
             = ProgressSourceWrapper(source, contentLength, progressListener)

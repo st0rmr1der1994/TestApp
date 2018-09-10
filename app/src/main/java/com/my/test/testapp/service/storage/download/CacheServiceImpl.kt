@@ -1,6 +1,5 @@
 package com.my.test.testapp.service.storage.download
 
-import android.content.Context
 import android.graphics.Bitmap
 import com.facebook.common.references.CloseableReference
 import com.facebook.datasource.DataSource
@@ -23,7 +22,6 @@ class CacheServiceImpl(
                 override fun onNewResultImpl(bitmapReference: CloseableReference<Bitmap>?) {
                     //TODO : find out why isInBitmapMemoryCache returns true and this returns null
                     bitmapReference?.let { it -> emitter.onSuccess(it.get()) }
-                            ?: emitter.onError(IllegalStateException("Bitmap is null for given url"))
                 }
 
                 override fun onFailureImpl(dataSource: DataSource<CloseableReference<CloseableImage>>) {

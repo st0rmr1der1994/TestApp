@@ -1,6 +1,6 @@
 package com.my.test.testapp.ui.detail.util
 
-interface NotificationProgressView {
+interface NotificationProgressView : Lifecycle {
 
     fun show()
 

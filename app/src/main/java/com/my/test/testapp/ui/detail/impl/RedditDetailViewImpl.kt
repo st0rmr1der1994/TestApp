@@ -52,6 +52,16 @@ class RedditDetailViewImpl(args: Bundle) : PresentableDaggerController<RedditDet
         downloadMediaButton.setOnClickListener { tryLoadContent() }
     }
 
+    override fun onAttach(view: View) {
+        super.onAttach(view)
+        notificationProgressView.onAttach()
+    }
+
+    override fun onDetach(view: View) {
+        super.onDetach(view)
+        notificationProgressView.onDetach()
+    }
+
     private fun tryLoadContent() {
         val storagePermissionLabel = android.Manifest.permission.WRITE_EXTERNAL_STORAGE
         if (checkSelfPermission(context!!, storagePermissionLabel)

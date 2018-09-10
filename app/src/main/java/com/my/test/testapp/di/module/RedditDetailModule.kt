@@ -5,6 +5,7 @@ import android.content.Context
 import com.my.test.testapp.di.scope.ActivityScope
 import com.my.test.testapp.interactor.RedditDetailInteractor
 import com.my.test.testapp.navigation.RouterProvider
+import com.my.test.testapp.service.network.util.DownloadProgressListener
 import com.my.test.testapp.ui.detail.RedditDetailPresenter
 import com.my.test.testapp.ui.detail.RedditDetailRouter
 import com.my.test.testapp.ui.detail.impl.RedditDetailPresenterImpl
@@ -19,8 +20,8 @@ class RedditDetailModule {
 
     @SuppressLint("ServiceCast")
     @Provides
-    internal fun provideNotificatonProgressView(@ActivityScope context: Context): NotificationProgressView
-            = NotificationProgressViewImpl(context)
+    internal fun provideNotificatonProgressView(@ActivityScope context: Context, progressListener: DownloadProgressListener): NotificationProgressView
+            = NotificationProgressViewImpl(context, progressListener)
 
     @Provides
     internal fun provideDetailRouter(routerProvider: RouterProvider): RedditDetailRouter = RedditDetailRouterImpl(routerProvider)
