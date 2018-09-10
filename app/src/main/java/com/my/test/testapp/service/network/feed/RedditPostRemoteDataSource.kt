@@ -6,7 +6,7 @@ import com.my.test.testapp.interactor.FeedMetadata
 import com.my.test.testapp.service.RedditPostsDataSource
 import com.my.test.testapp.service.storage.feed.RedditPostCache
 import com.my.test.testapp.utils.ITEMS_PER_PAGE
-import io.reactivex.Single
+import io.reactivex.Flowable
 
 class RedditPostRemoteDataSource(
         private val redditFeedApi: RedditFeedApi,
@@ -16,7 +16,7 @@ class RedditPostRemoteDataSource(
 
     private var nextCursor: String? = null
 
-    override fun redditPosts(feedMetadata: FeedMetadata): Single<List<RedditPost>> {
+    override fun redditPosts(feedMetadata: FeedMetadata): Flowable<List<RedditPost>> {
         return if (feedMetadata.forceReload || nextCursor == null) {
             loadPostsInitial()
         } else {
@@ -24,18 +24,21 @@ class RedditPostRemoteDataSource(
         }
     }
 
-    private fun loadPostsInitial(): Single<List<RedditPost>> {
+    private fun loadPostsInitial(): Flowable<List<RedditPost>> {
         return redditFeedApi.getTopPosts(ITEMS_PER_PAGE)
-                .doOnSuccess { nextCursor = it.nextPageCursor }
-                .map { converter.convert(it.data) }
-                .doOnSuccess { redditPostCache.savePosts(it) }
-
+                .map {
+                    nextCursor = it.nextPageCursor
+                    return@map converter.convert(it.data)
+                }
+                .doOnNext { redditPostCache.savePosts(it) }
     }
 
-    private fun loadPostsAfter(): Single<List<RedditPost>> {
+    private fun loadPostsAfter(): Flowable<List<RedditPost>> {
         return redditFeedApi.getTopPostsAfter(ITEMS_PER_PAGE, nextCursor!!)
-                .doOnSuccess { nextCursor = it.nextPageCursor }
-                .map { converter.convert(it.data) }
-                .doOnSuccess { redditPostCache.savePosts(it) }
+                .map {
+                    nextCursor = it.nextPageCursor
+                    return@map converter.convert(it.data)
+                }
+                .doOnNext { redditPostCache.savePosts(it) }
     }
 }

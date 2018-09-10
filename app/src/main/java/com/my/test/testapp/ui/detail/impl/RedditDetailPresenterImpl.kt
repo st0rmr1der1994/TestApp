@@ -5,7 +5,7 @@ import com.my.test.testapp.ui.common.MvpPresenterImpl
 import com.my.test.testapp.ui.detail.RedditDetailPresenter
 import com.my.test.testapp.ui.detail.RedditDetailRouter
 import com.my.test.testapp.ui.detail.RedditDetailView
-import io.reactivex.observers.DisposableSingleObserver
+import io.reactivex.subscribers.DisposableSubscriber
 
 class RedditDetailPresenterImpl(
         private val redditDetailRouter: RedditDetailRouter,
@@ -20,21 +20,25 @@ class RedditDetailPresenterImpl(
 
     override fun loadContent(url: String?) {
         url?.let {
-            redditDetailInteractor.interact(RedditDetailObserver(view), url)
+            redditDetailInteractor.interact(RedditDetailSubscriber(view), url)
         }
     }
 
     override fun goBack() = redditDetailRouter.goBack()
 }
 
-private class RedditDetailObserver(private val view: RedditDetailView) : DisposableSingleObserver<String>() {
+private class RedditDetailSubscriber(private val view: RedditDetailView) : DisposableSubscriber<String>() {
     override fun onStart() {
+        super.onStart()
         view.showLoading()
     }
 
-    override fun onSuccess(result: String) {
-        view.hideLoading()
+    override fun onNext(result: String) {
         view.showResult(result)
+    }
+
+    override fun onComplete() {
+        view.hideLoading()
     }
 
     override fun onError(e: Throwable) {

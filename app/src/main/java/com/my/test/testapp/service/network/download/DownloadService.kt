@@ -1,8 +1,8 @@
 package com.my.test.testapp.service.network.download
 
-import io.reactivex.Single
+import io.reactivex.Flowable
 
 interface DownloadService {
 
-    fun downloadFileByUrl(url: String): Single<String>
+    fun downloadFileByUrl(url: String): Flowable<String>
 }

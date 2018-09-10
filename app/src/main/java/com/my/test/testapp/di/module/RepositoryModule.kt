@@ -25,8 +25,7 @@ class RepositoryModule {
 
     @Provides
     internal fun provideRepository(
-            networkManager: NetworkManager,
             dataSourceFactory: RedditDataSourceFactory,
             converter: RedditPostToPostModelConverterImpl
-    ): RedditRepository = RedditRepositoryImpl(networkManager, dataSourceFactory, converter)
+    ): RedditRepository = RedditRepositoryImpl(dataSourceFactory, converter)
 }

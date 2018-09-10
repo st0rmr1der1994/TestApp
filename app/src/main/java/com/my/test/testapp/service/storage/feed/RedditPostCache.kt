@@ -5,7 +5,7 @@ import android.arch.persistence.room.Insert
 import android.arch.persistence.room.OnConflictStrategy
 import android.arch.persistence.room.Query
 import com.my.test.testapp.entity.RedditPost
-import io.reactivex.Single
+import io.reactivex.Maybe
 
 @Dao
 interface RedditPostCache {
@@ -14,5 +14,5 @@ interface RedditPostCache {
     fun savePosts(posts : List<RedditPost>)
 
     @Query("SELECT * FROM posts")
-    fun fetchPosts() : Single<List<RedditPost>>
+    fun fetchPosts() : Maybe<List<RedditPost>>
 }

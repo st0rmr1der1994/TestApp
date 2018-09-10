@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import com.my.test.testapp.service.network.util.NetworkManager
 import com.my.test.testapp.service.storage.download.CacheService
 import com.my.test.testapp.service.storage.download.FileStorage
+import io.reactivex.Flowable
 import io.reactivex.Single
 import okhttp3.ResponseBody
 
@@ -14,7 +15,7 @@ class DownloadServiceImpl(
         private val fileStorage: FileStorage
 ) : DownloadService {
 
-    override fun downloadFileByUrl(url: String): Single<String> {
+    override fun downloadFileByUrl(url: String): Flowable<String> {
         return if (networkManager.isConnected()) {
             downloadFromApi(url)
         } else {
@@ -22,14 +23,16 @@ class DownloadServiceImpl(
         }
     }
 
-    private fun downloadFromApi(url: String): Single<String> {
+    private fun downloadFromApi(url: String): Flowable<String> {
         return downloadApi.getPostContent(url)
                 .flatMap { storeDownloadedFile(it) }
+                .toFlowable()
     }
 
-    private fun downloadFromCache(url: String): Single<String> {
+    private fun downloadFromCache(url: String): Flowable<String> {
         return cacheService.fetchImageFromCache(url)
                 .flatMap { storeDownloadedFile(it) }
+                .toFlowable()
     }
 
     private fun storeDownloadedFile(bitmap: Bitmap): Single<String> {
