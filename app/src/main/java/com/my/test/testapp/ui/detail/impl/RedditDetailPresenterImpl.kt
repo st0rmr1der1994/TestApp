@@ -3,10 +3,14 @@ package com.my.test.testapp.ui.detail.impl
 import com.my.test.testapp.interactor.RedditDetailInteractor
 import com.my.test.testapp.ui.common.MvpPresenterImpl
 import com.my.test.testapp.ui.detail.RedditDetailPresenter
+import com.my.test.testapp.ui.detail.RedditDetailRouter
 import com.my.test.testapp.ui.detail.RedditDetailView
 import io.reactivex.observers.DisposableSingleObserver
 
-class RedditDetailPresenterImpl(private val redditDetailInteractor: RedditDetailInteractor)
+class RedditDetailPresenterImpl(
+        private val redditDetailRouter: RedditDetailRouter,
+        private val redditDetailInteractor: RedditDetailInteractor
+)
     : MvpPresenterImpl<RedditDetailView>(), RedditDetailPresenter {
 
     override fun detachView() {
@@ -19,6 +23,8 @@ class RedditDetailPresenterImpl(private val redditDetailInteractor: RedditDetail
             redditDetailInteractor.interact(RedditDetailObserver(view), url)
         }
     }
+
+    override fun goBack() = redditDetailRouter.goBack()
 }
 
 private class RedditDetailObserver(private val view: RedditDetailView) : DisposableSingleObserver<String>() {

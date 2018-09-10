@@ -5,10 +5,12 @@ import com.my.test.testapp.interactor.FeedMetadata
 import com.my.test.testapp.interactor.RedditFeedInteractor
 import com.my.test.testapp.ui.common.MvpPresenterImpl
 import com.my.test.testapp.ui.feed.RedditFeedPresenter
+import com.my.test.testapp.ui.feed.RedditFeedRouter
 import com.my.test.testapp.ui.feed.RedditFeedView
 import io.reactivex.observers.DisposableSingleObserver
 
 class RedditFeedPresenterImpl(
+        private val redditFeedRouter: RedditFeedRouter,
         private val redditFeedInteractor: RedditFeedInteractor
 ) : MvpPresenterImpl<RedditFeedView>(), RedditFeedPresenter {
 
@@ -26,6 +28,8 @@ class RedditFeedPresenterImpl(
     private fun load(pageSize: Int, forceReload: Boolean, paginatedReuest: Boolean) {
         redditFeedInteractor.interact(RedditFeedObserver(view), FeedMetadata(pageSize, forceReload, paginatedReuest))
     }
+
+    override fun openPostDetail(postModel: RedditPostModel) = redditFeedRouter.goPostDetail(postModel)
 }
 
 private class RedditFeedObserver(private val view: RedditFeedView) : DisposableSingleObserver<List<RedditPostModel>>() {

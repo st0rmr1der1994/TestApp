@@ -3,8 +3,11 @@ package com.my.test.testapp.di.module
 import android.app.Activity
 import com.my.test.testapp.di.scope.ActivityScope
 import com.my.test.testapp.interactor.RedditFeedInteractor
+import com.my.test.testapp.navigation.RouterProvider
 import com.my.test.testapp.ui.feed.RedditFeedPresenter
+import com.my.test.testapp.ui.feed.RedditFeedRouter
 import com.my.test.testapp.ui.feed.impl.RedditFeedPresenterImpl
+import com.my.test.testapp.ui.feed.impl.RedditFeedRouterImpl
 import com.my.test.testapp.ui.feed.util.FixedCountLayoutManager
 import com.my.test.testapp.utils.ITEMS_PER_PAGE_HORIZONTAL
 import com.my.test.testapp.utils.ITEMS_PER_PAGE_VERTICAL
@@ -27,6 +30,9 @@ class RedditFeedModule {
             = FixedCountLayoutManager(activity, ITEMS_PER_PAGE_VERTICAL)
 
     @Provides
-    internal fun provideFeedPresenter(redditFeedInteractor: RedditFeedInteractor)
-            : RedditFeedPresenter = RedditFeedPresenterImpl(redditFeedInteractor)
+    internal fun provideFeedRouter(routerProvider: RouterProvider): RedditFeedRouter = RedditFeedRouterImpl(routerProvider)
+
+    @Provides
+    internal fun provideFeedPresenter(redditFeedRouter: RedditFeedRouter, redditFeedInteractor: RedditFeedInteractor)
+            : RedditFeedPresenter = RedditFeedPresenterImpl(redditFeedRouter, redditFeedInteractor)
 }

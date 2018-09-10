@@ -4,10 +4,15 @@ import android.annotation.SuppressLint
 import android.content.Context
 import com.my.test.testapp.di.scope.ActivityScope
 import com.my.test.testapp.interactor.RedditDetailInteractor
+import com.my.test.testapp.navigation.RouterProvider
 import com.my.test.testapp.ui.detail.RedditDetailPresenter
+import com.my.test.testapp.ui.detail.RedditDetailRouter
 import com.my.test.testapp.ui.detail.impl.RedditDetailPresenterImpl
+import com.my.test.testapp.ui.detail.impl.RedditDetailRouterImpl
 import com.my.test.testapp.ui.detail.util.NotificationProgressView
 import com.my.test.testapp.ui.detail.util.NotificationProgressViewImpl
+import com.my.test.testapp.ui.feed.RedditFeedRouter
+import com.my.test.testapp.ui.feed.impl.RedditFeedRouterImpl
 import dagger.Module
 import dagger.Provides
 
@@ -23,6 +28,9 @@ class RedditDetailModule {
             = NotificationProgressViewImpl(context)
 
     @Provides
-    internal fun provideDetailPresenter(redditDetailInteractor: RedditDetailInteractor): RedditDetailPresenter
-            = RedditDetailPresenterImpl(redditDetailInteractor)
+    internal fun provideDetailRouter(routerProvider: RouterProvider): RedditDetailRouter = RedditDetailRouterImpl(routerProvider)
+
+    @Provides
+    internal fun provideDetailPresenter(redditDetailRouter: RedditDetailRouter, redditDetailInteractor: RedditDetailInteractor): RedditDetailPresenter
+            = RedditDetailPresenterImpl(redditDetailRouter, redditDetailInteractor)
 }

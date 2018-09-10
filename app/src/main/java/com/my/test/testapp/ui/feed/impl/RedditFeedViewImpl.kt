@@ -62,8 +62,7 @@ class RedditFeedViewImpl : PresentableDaggerController<RedditFeedView, RedditFee
         feedRecyclerView.layoutManager = pickSuitableLayoutManager(currentOrientation)
         feedRecyclerView.addItemDecoration(DividerItemDecoration(context, VERTICAL))
         feedRecyclerView.addOnItemTouchListener(RecyclerItemClickListener(context!!) {
-            val postModel = feedAdapter.getItemByPosition(it)
-            router.go(RedditDetailViewImpl.create(postModel))
+            presenter.openPostDetail(feedAdapter.getItemByPosition(it))
 
         })
         feedRecyclerView.addOnScrollListener(RecyclerEndlessScrollListener({ feedSwipeToRefreshLayout.isRefreshing = it }) { presenter.loadMorePosts() })

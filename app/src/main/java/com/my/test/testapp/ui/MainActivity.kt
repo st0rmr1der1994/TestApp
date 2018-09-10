@@ -13,11 +13,12 @@ import com.my.test.testapp.R
 import com.my.test.testapp.di.component.ActivityComponent
 import com.my.test.testapp.di.component.DaggerActivityComponent
 import com.my.test.testapp.di.module.ActivityModule
+import com.my.test.testapp.navigation.RouterProvider
 import com.my.test.testapp.ui.feed.impl.RedditFeedViewImpl
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), RouterProvider {
 
-    private lateinit var router: Router
+    override lateinit var router: Router
     internal lateinit var activityComponent: ActivityComponent
 
     override fun onCreate(savedInstanceState: Bundle?) {
