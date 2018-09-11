@@ -26,7 +26,7 @@ abstract class Interactor<E, M> {
         }
     }
 
-    private fun addDisposable(newDisposable: Disposable) {
+    fun addDisposable(newDisposable: Disposable) {
         disposable.add(newDisposable)
     }
 }

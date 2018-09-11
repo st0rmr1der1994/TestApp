@@ -32,7 +32,7 @@ class RedditFeedPresenterImpl(
     override fun openPostDetail(postModel: RedditPostModel) = redditFeedRouter.goPostDetail(postModel)
 }
 
-class RedditFeedSubscriber(private val view: RedditFeedView) : DisposableSubscriber<List<RedditPostModel>>() {
+private class RedditFeedSubscriber(private val view: RedditFeedView) : DisposableSubscriber<List<RedditPostModel>>() {
     override fun onStart() {
         super.onStart()
         view.hideError()

@@ -27,7 +27,7 @@ class RedditDetailPresenterImpl(
     override fun goBack() = redditDetailRouter.goBack()
 }
 
-class RedditDetailSubscriber(private val view: RedditDetailView) : DisposableSubscriber<String>() {
+private class RedditDetailSubscriber(private val view: RedditDetailView) : DisposableSubscriber<String>() {
     override fun onStart() {
         super.onStart()
         view.showLoading()
