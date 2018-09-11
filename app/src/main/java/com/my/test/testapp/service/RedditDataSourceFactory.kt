@@ -5,4 +5,4 @@ interface RedditDataSourceFactory {
     fun getDataSource(dataSourceKind: DataSourceKind): RedditPostsDataSource
 }
 
-enum class DataSourceKind { REMOTE, LOCAL }
+enum class DataSourceKind { REMOTE, LOCAL, MEMORY }

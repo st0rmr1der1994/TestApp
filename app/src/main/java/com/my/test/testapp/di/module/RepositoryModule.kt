@@ -6,13 +6,14 @@ import com.my.test.testapp.model.RedditRepositoryImpl
 import com.my.test.testapp.service.RedditDataSourceFactory
 import com.my.test.testapp.service.RedditDataSourceFactoryImpl
 import com.my.test.testapp.service.RedditPostsDataSource
-import com.my.test.testapp.service.network.util.NetworkManager
+import com.my.test.testapp.service.storage.feed.RedditPostMemCache
 import dagger.Module
 import dagger.Provides
 import javax.inject.Named
 
 const val REMOTE_DATASOURCE = "DataSource#remote"
 const val LOCAL_DATASOURCE = "DataSource#local"
+const val MEMORY_DATASOURCE = "DataSource#memory"
 
 @Module
 class RepositoryModule {
@@ -20,12 +21,14 @@ class RepositoryModule {
     @Provides
     internal fun provideDataSourceFactory(
             @Named(REMOTE_DATASOURCE) remoteDataSource: RedditPostsDataSource,
-            @Named(LOCAL_DATASOURCE) localDataSource: RedditPostsDataSource
-    ): RedditDataSourceFactory = RedditDataSourceFactoryImpl(remoteDataSource, localDataSource)
+            @Named(LOCAL_DATASOURCE) localDataSource: RedditPostsDataSource,
+            @Named(MEMORY_DATASOURCE) memoryDataSource: RedditPostsDataSource
+    ): RedditDataSourceFactory = RedditDataSourceFactoryImpl(remoteDataSource, localDataSource, memoryDataSource)
 
     @Provides
     internal fun provideRepository(
             dataSourceFactory: RedditDataSourceFactory,
-            converter: RedditPostToPostModelConverterImpl
-    ): RedditRepository = RedditRepositoryImpl(dataSourceFactory, converter)
+            converter: RedditPostToPostModelConverterImpl,
+            memCache: RedditPostMemCache
+    ): RedditRepository = RedditRepositoryImpl(dataSourceFactory, converter, memCache)
 }

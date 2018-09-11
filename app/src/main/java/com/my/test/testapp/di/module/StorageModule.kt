@@ -8,9 +8,7 @@ import com.my.test.testapp.service.storage.download.CacheService
 import com.my.test.testapp.service.storage.download.CacheServiceImpl
 import com.my.test.testapp.service.storage.download.FileStorage
 import com.my.test.testapp.service.storage.download.FileStorageImpl
-import com.my.test.testapp.service.storage.feed.RedditDatabase
-import com.my.test.testapp.service.storage.feed.RedditPostCache
-import com.my.test.testapp.service.storage.feed.RedditPostLocalDataSource
+import com.my.test.testapp.service.storage.feed.*
 import com.my.test.testapp.utils.ContentResolverProvider
 import com.my.test.testapp.utils.FileStorageDirProvider
 import dagger.Module
@@ -30,6 +28,17 @@ class StorageModule {
     @Named(LOCAL_DATASOURCE)
     internal fun provideLocalDataSource(redditPostCache: RedditPostCache): RedditPostsDataSource
             = RedditPostLocalDataSource(redditPostCache)
+
+    @Provides
+    @Singleton
+    internal fun provideMemoryCache(): RedditPostMemCache = RedditPostMemCacheImpl()
+
+
+    @Provides
+    @Singleton
+    @Named(MEMORY_DATASOURCE)
+    internal fun provideMemoryDataSource(memCache: RedditPostMemCache): RedditPostsDataSource
+            = RedditPostsMemoryDataSource(memCache)
 
     @Provides
     @Singleton
