@@ -11,12 +11,6 @@ class DownloadProgressListenerImpl : DownloadProgressListener {
 
     override fun progress(bytesRead: Long, contentLength: Long, done: Boolean) {
         val progress = ((bytesRead.toDouble() / contentLength.toDouble()) * 100).toInt()
-        if (progressSubject.hasComplete()) {
-            progressSubject = PublishSubject.create()
-        }
         progressSubject.onNext(progress)
-        if (done) {
-            progressSubject.onComplete()
-        }
     }
 }

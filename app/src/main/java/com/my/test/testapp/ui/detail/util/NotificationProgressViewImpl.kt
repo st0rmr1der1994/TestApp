@@ -41,9 +41,7 @@ class NotificationProgressViewImpl(
 
     override fun hide() {
         notificationManager.cancel(NOTIFICATION_ID)
-        if (!compositeDisposable.isDisposed) {
-            compositeDisposable.dispose()
-        }
+        compositeDisposable.clear()
     }
 
     private fun progress(progress: Int) {
