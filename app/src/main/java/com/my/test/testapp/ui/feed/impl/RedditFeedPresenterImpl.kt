@@ -16,7 +16,7 @@ class RedditFeedPresenterImpl(
 
     override fun detachView() {
         super.detachView()
-        redditFeedInteractor.dispose()
+        dispose()
     }
 
     override fun loadPosts() = load(false, false)
@@ -26,7 +26,7 @@ class RedditFeedPresenterImpl(
     override fun forceLoadPosts() = load(true, false)
 
     private fun load(forceReload: Boolean, paginatedReuest: Boolean) {
-        redditFeedInteractor.interact(RedditFeedSubscriber(view), FeedMetadata(forceReload, paginatedReuest))
+        addDisposable(redditFeedInteractor.interact(FeedMetadata(forceReload, paginatedReuest)).subscribeWith(RedditFeedSubscriber(view)))
     }
 
     override fun openPostDetail(postModel: RedditPostModel) = redditFeedRouter.goPostDetail(postModel)

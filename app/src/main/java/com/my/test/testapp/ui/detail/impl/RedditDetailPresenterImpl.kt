@@ -10,17 +10,16 @@ import io.reactivex.subscribers.DisposableSubscriber
 class RedditDetailPresenterImpl(
         private val redditDetailRouter: RedditDetailRouter,
         private val redditDetailInteractor: RedditDetailInteractor
-)
-    : MvpPresenterImpl<RedditDetailView>(), RedditDetailPresenter {
+) : MvpPresenterImpl<RedditDetailView>(), RedditDetailPresenter {
 
     override fun detachView() {
         super.detachView()
-        redditDetailInteractor.dispose()
+        dispose()
     }
 
     override fun loadContent(url: String?) {
         url?.let {
-            redditDetailInteractor.interact(RedditDetailSubscriber(view), url)
+            addDisposable(redditDetailInteractor.interact(url).subscribeWith(RedditDetailSubscriber(view)))
         }
     }
 
