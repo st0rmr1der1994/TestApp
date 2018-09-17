@@ -16,7 +16,7 @@ class RedditPostToPostModelConverterImpl : BaseConverter<RedditPost, RedditPostM
             )
 
     private fun convertTimestampToHourOffset(timestamp: Long): Int {
-        val millisDiff = System.currentTimeMillis() - timestamp * 1000
-        return TimeUnit.MILLISECONDS.toHours(millisDiff).toInt()
+        val millisDiff = System.currentTimeMillis() / 1000 - timestamp
+        return TimeUnit.SECONDS.toHours(millisDiff).toInt()
     }
 }
