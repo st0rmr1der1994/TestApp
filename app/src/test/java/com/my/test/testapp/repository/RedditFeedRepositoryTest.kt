@@ -10,6 +10,7 @@ import com.my.test.testapp.model.RedditRepositoryImpl
 import com.my.test.testapp.service.DataSourceKind
 import com.my.test.testapp.service.RedditDataSourceFactory
 import com.my.test.testapp.service.RedditPostsDataSource
+import com.my.test.testapp.service.storage.feed.RedditPostCache
 import com.my.test.testapp.service.storage.feed.RedditPostMemCache
 import io.reactivex.Flowable
 import io.reactivex.subscribers.TestSubscriber
@@ -33,6 +34,8 @@ class RedditFeedRepositoryTest : BaseTest() {
     lateinit var dataSource: RedditPostsDataSource
     @Mock
     lateinit var memCache: RedditPostMemCache
+    @Mock
+    lateinit var localCache: RedditPostCache
 
     private var testSubscriber: TestSubscriber<List<RedditPostModel>>? = null
     private var redditRepository: RedditRepository? = null
@@ -41,7 +44,7 @@ class RedditFeedRepositoryTest : BaseTest() {
     @Before
     fun setUp() {
         testSubscriber = TestSubscriber()
-        redditRepository = RedditRepositoryImpl(dataSourceFactory, converter, memCache)
+        redditRepository = RedditRepositoryImpl(dataSourceFactory, converter, memCache, localCache)
         DataSourceKind.values().forEach { given(dataSourceFactory.getDataSource(it)).willReturn(dataSource) }
         val redditPost = Mockito.mock(RedditPost::class.java)
         redditFeed = listOf(redditPost)

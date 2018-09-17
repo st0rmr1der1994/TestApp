@@ -30,10 +30,12 @@ class RedditFeedViewImpl : PresentableDaggerController<RedditFeedView, RedditFee
     internal lateinit var feedPresenter: RedditFeedPresenter
     @Inject
     internal lateinit var layoutManager: RecyclerView.LayoutManager
+    @Inject
+    internal lateinit var feedAdapter: RedditFeedAdapter
 
     internal lateinit var feedComponent: FeedComponent
 
-    private val feedAdapter = RedditFeedAdapter(ArrayList())
+    private val scrollListener = RecyclerEndlessScrollListener { presenter.loadMorePosts() }
 
     override val presenter: RedditFeedPresenter
         get() = feedPresenter
@@ -46,7 +48,7 @@ class RedditFeedViewImpl : PresentableDaggerController<RedditFeedView, RedditFee
             presenter.openPostDetail(feedAdapter.getItemByPosition(it))
 
         })
-        feedRecyclerView.addOnScrollListener(RecyclerEndlessScrollListener({ feedSwipeToRefreshLayout.isRefreshing = it }) { presenter.loadMorePosts() })
+        feedRecyclerView.addOnScrollListener(scrollListener)
         feedRecyclerView.adapter = feedAdapter
 
         feedSwipeToRefreshLayout.setOnRefreshListener { presenter.forceLoadPosts() }
@@ -72,10 +74,12 @@ class RedditFeedViewImpl : PresentableDaggerController<RedditFeedView, RedditFee
 
     override fun showLoading() {
         feedSwipeToRefreshLayout.isRefreshing = true
+        scrollListener.isLoading = true
     }
 
     override fun hideLoading() {
         feedSwipeToRefreshLayout.isRefreshing = false
+        scrollListener.isLoading = false
     }
 
     override fun showError() {

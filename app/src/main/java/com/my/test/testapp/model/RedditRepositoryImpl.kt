@@ -5,24 +5,24 @@ import com.my.test.testapp.entity.RedditPostModel
 import com.my.test.testapp.interactor.FeedMetadata
 import com.my.test.testapp.service.DataSourceKind
 import com.my.test.testapp.service.RedditDataSourceFactory
+import com.my.test.testapp.service.storage.feed.RedditPostCache
 import com.my.test.testapp.service.storage.feed.RedditPostMemCache
 import io.reactivex.Flowable
 
 class RedditRepositoryImpl(
         private val dataSourceFactory: RedditDataSourceFactory,
         private val converter: RedditPostToPostModelConverterImpl,
-        private val memCache: RedditPostMemCache
+        private val memCache: RedditPostMemCache,
+        private val localCache: RedditPostCache
 ) : RedditRepository {
 
     override fun redditPosts(metadata: FeedMetadata): Flowable<List<RedditPostModel>> {
-        //TODO : I think this metadata params should be reworked somehow
         memCache.isDirty = metadata.forceReload
-        if (!memCache.isDirty && !metadata.paginatedRequest && !memCache.isEmpty) {
-            return loadFromMemory(metadata)
+        if (metadata.paginatedRequest) {
+            return loadFromRemote(metadata)
         }
-
-        return if (memCache.isDirty || metadata.paginatedRequest) {
-            loadFromRemote(metadata)
+        return if (!memCache.isDirty && !memCache.isEmpty) {
+            loadFromMemory(metadata)
         } else {
             Flowable.concat(loadFromLocal(metadata), loadFromRemote(metadata))
                     .filter { !it.isEmpty() }
@@ -43,7 +43,13 @@ class RedditRepositoryImpl(
 
     private fun loadFromRemote(metadata: FeedMetadata): Flowable<List<RedditPostModel>> {
         return dataSourceFactory.getDataSource(DataSourceKind.REMOTE).redditPosts(metadata)
-                .doOnNext { memCache.savePosts(it, metadata.paginatedRequest) }
+                .doOnNext { memCache.savePosts(it, metadata.forceReload) }
+                .doOnNext {
+                    if (metadata.forceReload) {
+                        localCache.delete()
+                    }
+                    localCache.savePosts(it)
+                }
                 .map { converter.convert(it) }
                 .doOnComplete { memCache.isDirty = false }
     }

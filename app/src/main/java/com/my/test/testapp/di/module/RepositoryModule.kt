@@ -6,6 +6,7 @@ import com.my.test.testapp.model.RedditRepositoryImpl
 import com.my.test.testapp.service.RedditDataSourceFactory
 import com.my.test.testapp.service.RedditDataSourceFactoryImpl
 import com.my.test.testapp.service.RedditPostsDataSource
+import com.my.test.testapp.service.storage.feed.RedditPostCache
 import com.my.test.testapp.service.storage.feed.RedditPostMemCache
 import dagger.Module
 import dagger.Provides
@@ -29,6 +30,7 @@ class RepositoryModule {
     internal fun provideRepository(
             dataSourceFactory: RedditDataSourceFactory,
             converter: RedditPostToPostModelConverterImpl,
-            memCache: RedditPostMemCache
-    ): RedditRepository = RedditRepositoryImpl(dataSourceFactory, converter, memCache)
+            memCache: RedditPostMemCache,
+            locaCache: RedditPostCache
+    ): RedditRepository = RedditRepositoryImpl(dataSourceFactory, converter, memCache, locaCache)
 }

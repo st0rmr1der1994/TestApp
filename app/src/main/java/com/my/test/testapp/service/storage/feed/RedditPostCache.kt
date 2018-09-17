@@ -15,4 +15,7 @@ interface RedditPostCache {
 
     @Query("SELECT * FROM posts")
     fun fetchPosts() : Maybe<List<RedditPost>>
+
+    @Query("DELETE FROM posts")
+    fun delete()
 }

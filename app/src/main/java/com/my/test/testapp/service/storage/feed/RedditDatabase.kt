@@ -20,7 +20,6 @@ abstract class RedditDatabase : RoomDatabase() {
                     .fallbackToDestructiveMigration()
                     .build()
                     .redditDao()
-
         }
     }
 }

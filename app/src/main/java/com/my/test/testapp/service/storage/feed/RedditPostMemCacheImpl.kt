@@ -11,8 +11,8 @@ class RedditPostMemCacheImpl : RedditPostMemCache {
 
     override var isDirty: Boolean = false
 
-    override fun savePosts(posts: List<RedditPost>, paginated: Boolean) {
-        if (!paginated) {
+    override fun savePosts(posts: List<RedditPost>, forceReload: Boolean) {
+        if (forceReload) {
             cachedItems.clear()
         }
         cachedItems.addAll(posts)

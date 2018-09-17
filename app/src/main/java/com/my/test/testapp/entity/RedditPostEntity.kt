@@ -12,4 +12,6 @@ data class RedditPostEntity(
         @SerializedName("title") val postTitle: String?,
         @SerializedName("created") val postCreatedTimestamp: Double,
         @SerializedName("num_comments") val postCommentsCount: Int
-)
+) {
+    var pageCursor: String = ""
+}

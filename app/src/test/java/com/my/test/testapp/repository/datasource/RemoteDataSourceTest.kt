@@ -9,14 +9,15 @@ import com.my.test.testapp.interactor.FeedMetadata
 import com.my.test.testapp.service.RedditPostsDataSource
 import com.my.test.testapp.service.network.feed.RedditFeedApi
 import com.my.test.testapp.service.network.feed.RedditPostRemoteDataSource
-import com.my.test.testapp.service.storage.feed.RedditPostCache
+import com.my.test.testapp.service.network.util.NetworkManager
 import com.my.test.testapp.utils.ITEMS_PER_PAGE
 import io.reactivex.Flowable
 import io.reactivex.subscribers.TestSubscriber
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.BDDMockito.*
+import org.mockito.BDDMockito.given
+import org.mockito.BDDMockito.verify
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.junit.MockitoJUnitRunner
@@ -32,22 +33,25 @@ class RemoteDataSourceTest : BaseTest() {
     @Mock
     lateinit var redditApi: RedditFeedApi
     @Mock
-    lateinit var cache: RedditPostCache
-    @Mock
     lateinit var converter: RedditPostEntityToPostConverterImpl
+    @Mock
+    lateinit var networkManager: NetworkManager
+
+
     private lateinit var redditEntities: List<RedditPostEntity>
     private lateinit var redditPosts: List<RedditPost>
 
     @Before
     fun setUp() {
         testSubscriber = TestSubscriber()
-        redditPostsDataSource = RedditPostRemoteDataSource(redditApi, cache, converter)
+        redditPostsDataSource = RedditPostRemoteDataSource(redditApi, converter, networkManager)
         redditEntities = listOf(Mockito.mock(RedditPostEntity::class.java))
         redditPosts = listOf(Mockito.mock(RedditPost::class.java))
         val apiResponse = RedditFeedResponse(redditEntities, CURSOR)
         given(redditApi.getTopPosts(ITEMS_PER_PAGE, CURSOR)).willReturn(Flowable.just(apiResponse))
         given(redditApi.getTopPosts(ITEMS_PER_PAGE, null)).willReturn(Flowable.just(apiResponse))
         given(converter.convert(apiResponse.data)).willReturn(redditPosts)
+        given(networkManager.isConnected()).willReturn(true)
     }
 
     @Test
@@ -69,6 +73,5 @@ class RemoteDataSourceTest : BaseTest() {
     private fun prepareLoadFromRemote(feedMetadata: FeedMetadata) {
         redditPostsDataSource!!.redditPosts(feedMetadata).subscribe(testSubscriber)
         verify<RedditPostEntityToPostConverterImpl>(converter).convert(redditEntities)
-        verify<RedditPostCache>(cache).savePosts(redditPosts)
     }
 }

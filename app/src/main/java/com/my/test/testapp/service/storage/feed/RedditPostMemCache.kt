@@ -9,7 +9,7 @@ interface RedditPostMemCache {
 
     var isEmpty: Boolean
 
-    fun savePosts(posts: List<RedditPost>, paginated: Boolean)
+    fun savePosts(posts: List<RedditPost>, forceReload: Boolean)
 
     fun fetchPosts(): Flowable<List<RedditPost>>
 }

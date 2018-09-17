@@ -8,7 +8,7 @@ class RedditPostEntityToPostConverterImpl : BaseConverter<RedditPostEntity, Redd
     override fun convert(source: RedditPostEntity) = RedditPost(
             name = source.postName,
             postId = source.postId,
-            subredditId = source.subredditId,
+            pageCursor = source.pageCursor,
             content = source.postContent,
             thumbnail =  source.postThumbnail,
             author = source.postAuthor,

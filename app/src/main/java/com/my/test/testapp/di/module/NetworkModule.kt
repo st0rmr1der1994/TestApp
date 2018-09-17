@@ -15,7 +15,6 @@ import com.my.test.testapp.service.network.feed.RedditPostRemoteDataSource
 import com.my.test.testapp.service.network.util.*
 import com.my.test.testapp.service.storage.download.CacheService
 import com.my.test.testapp.service.storage.download.FileStorage
-import com.my.test.testapp.service.storage.feed.RedditPostCache
 import com.my.test.testapp.utils.BASE_URL
 import com.my.test.testapp.utils.NetworkManagerImpl
 import dagger.Module
@@ -118,9 +117,9 @@ class NetworkModule {
     @Singleton
     @Named(REMOTE_DATASOURCE)
     internal fun provideRemoteDataSource(redditFeedApi: RedditFeedApi,
-                                         redditPostCache: RedditPostCache,
-                                         converter: RedditPostEntityToPostConverterImpl): RedditPostsDataSource
-            = RedditPostRemoteDataSource(redditFeedApi, redditPostCache, converter)
+                                         converter: RedditPostEntityToPostConverterImpl,
+                                         networkManager: NetworkManager): RedditPostsDataSource
+            = RedditPostRemoteDataSource(redditFeedApi, converter, networkManager)
 
     @Provides
     @Singleton

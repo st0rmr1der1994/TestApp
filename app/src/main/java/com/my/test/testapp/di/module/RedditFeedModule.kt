@@ -11,6 +11,7 @@ import com.my.test.testapp.ui.feed.RedditFeedPresenter
 import com.my.test.testapp.ui.feed.RedditFeedRouter
 import com.my.test.testapp.ui.feed.impl.RedditFeedPresenterImpl
 import com.my.test.testapp.ui.feed.impl.RedditFeedRouterImpl
+import com.my.test.testapp.ui.feed.util.RedditFeedAdapter
 import dagger.Module
 import dagger.Provides
 
@@ -20,6 +21,9 @@ class RedditFeedModule {
     @Provides
     internal fun provideLayoutManager(@ActivityScope activity: Activity): RecyclerView.LayoutManager
             = LinearLayoutManager(activity, VERTICAL, false)
+
+    @Provides
+    internal fun provideFeedAdapter(): RedditFeedAdapter = RedditFeedAdapter(ArrayList())
 
     @Provides
     internal fun provideFeedRouter(routerProvider: RouterProvider): RedditFeedRouter = RedditFeedRouterImpl(routerProvider)
